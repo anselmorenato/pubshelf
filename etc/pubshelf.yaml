@@ -1,0 +1,5 @@
+dbpath: ../db.test/
+dbname: pubshelf.db
+apps:
+  pdf: /usr/bin/acroread
+  html: /usr/bin/firefox
