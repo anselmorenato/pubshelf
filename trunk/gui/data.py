@@ -18,17 +18,24 @@ class PubItem:
     self.comments = []
     self.links = []
   
+  def set_tags(self,tags):
+    self.tags = tags
+  
+  def set_links(self,links):
+    self.links = links
+
+  def set_comments(self,comments):
+    self.comments = comments
+
   def get_citation(self):
     rv = "%s, %d, %s, %s" \
           % (self.authors, self.pub_year, self.title, self.journal)
     if( self.volume ):
       rv += ", %s" % self.volume
-    
     if( self.page ):
       rv += ", %s" % self.page
-
     return rv
-  
+
 class Link:
   def __init__(self, id=0, pubitem_id=0, name='', uri='', uri_type=''\
                 , created_at=''):
