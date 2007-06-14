@@ -1,10 +1,10 @@
 import wx
 from menu import PubShelfMenuBar
-from new_dialog import PubShelfNewItemDialog
-from search_dialog import PubShelfSearchDialog
-from tag_tree import PubShelfTagTree
-from item_list import PubShelfItemList
-from item_content import PubShelfItemContent
+from dialog_new import PubShelfNewItemDialog
+from dialog_search import PubShelfSearchDialog
+from main_tree import PubShelfTagTree
+from main_list import PubShelfItemList
+from main_content import PubShelfItemContent
 
 windowSize = wx.Size(800,600)
 treePaneWidth = 200
@@ -54,6 +54,7 @@ class PubShelfFrame(wx.Frame):
     ## Wrap Up
     self.itemSplitter.SplitHorizontally(self.itemList, self.itemContent,
                                       itemListHeight)
+    self.itemSplitter.SetSashPosition(itemListHeight)
     self.treeSplitter.SplitVertically(self.tree, self.itemSplitter, 
                                       treePaneWidth)
 

@@ -1,9 +1,10 @@
 #!/usr/bin/env python2.5
 
-import wx
-import yaml
-from frame import PubShelfFrame;
-from dbi import PubShelfDBI;
+import wx, yaml
+from frame import PubShelfFrame
+import sys
+sys.path.append('../libpy/')
+from dbi import PubShelfDBI
 
 class PubShelfGUI(wx.App):
   def OnInit(self):
