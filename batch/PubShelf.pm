@@ -13,12 +13,12 @@ sub new {
     print STDERR 'Connectiong ',$self->{test_db}," ...\n";
     $self->{dbh} = DBI->connect('dbi:SQLite:dbname='.$self->{test_db},'','')
       || die "DBI connection error\n";
-    $self->{file_dir} = '../db.test/';
+    $self->{file_dir} = '/home/linusben/pubshelf/db.test/';
   } else {
     print STDERR 'Connecting ',$self->{db}," ...\n";
     $self->{dbh} = DBI->connect('dbi:SQLite:dbname='.$self->{db},'','')
       || die "DBI connection error\n";
-    $self->{file_dir} = '../db/';
+    $self->{file_dir} = '/home/linusben/pubshelf/db/';
   }
   bless $self, $class;
 }
@@ -64,9 +64,9 @@ sub insert_yaml {
   my $filename = "$file_dir/$pubitem_nickname".'_'.$data->{file}->{name}
                 .'.'.$data->{file}->{uri_type};
   $filename =~ s/\s+//g;
-  rename($data->{file}->{path}, $filename);
+  rename($data->{file}->{path}, $filename) if(-e $data->{file}->{path});
   $sth_link->execute($pubitem_id, $data->{file}->{name},
-                     $data->{file}->{uri_type}, $filename);
+                     'file://'.$filename, $data->{file}->{uri_type});
   $sth_link->finish();
 
   ## Tags

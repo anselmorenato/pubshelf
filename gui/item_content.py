@@ -31,7 +31,6 @@ class PubShelfItemContent(wx.html.HtmlWindow):
 
   def OnLinkClicked(self, link):
     uri = link.GetHref()
-    print uri
     re_filepath = re.compile('^file://')
     re_filetype = re.compile('.([a-z]+)$')
     if( re_filepath.match(uri) ):

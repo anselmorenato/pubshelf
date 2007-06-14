@@ -1,14 +1,15 @@
 import wx
 from menu import PubShelfMenuBar
+from new_dialog import PubShelfNewItemDialog
+from search_dialog import PubShelfSearchDialog
 from tag_tree import PubShelfTagTree
 from item_list import PubShelfItemList
 from item_content import PubShelfItemContent
 
-#windowSize = wx.Size(800,600)
-windowSize = wx.Size(600,400)
+windowSize = wx.Size(800,600)
 treePaneWidth = 200
 minTreePaneWidth = 100
-itemListHeight = 200
+itemListHeight = 300
 minItemPaneHeight = 100
 
 class PubShelfFrame(wx.Frame):
@@ -19,15 +20,27 @@ class PubShelfFrame(wx.Frame):
 
     ## MenuBar
     self.SetMenuBar( PubShelfMenuBar() )
-
+    
     ## StatusBar
-    self.CreateStatusBar();
+    self.statusbar = self.CreateStatusBar();
 
+    ## ToolBar
+    toolbar = self.CreateToolBar();
+    toolbar.AddSimpleTool(1, 
+        wx.Image('../icon/new.png',wx.BITMAP_TYPE_PNG).ConvertToBitmap()) 
+    toolbar.AddSimpleTool(2,
+        wx.Image('../icon/search.png',wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+    toolbar.AddSeparator()
+    self.Bind(wx.EVT_TOOL, self.NewItemDialog, id=1)
+    self.Bind(wx.EVT_TOOL, self.SearchDialog, id=2)
+ 
     ## Splitter 
-    self.treeSplitter = wx.SplitterWindow(self, -1, style=wx.SP_BORDER)
+    self.treeSplitter = wx.SplitterWindow(self, -1, 
+                                          style=wx.SP_BORDER)
     self.treeSplitter.SetMinimumPaneSize(minTreePaneWidth)
     self.itemSplitter = wx.SplitterWindow(self.treeSplitter, -1,
                                           style=wx.SP_BORDER)
+    self.itemSplitter.SetMinimumPaneSize(minItemPaneHeight)
 
     ## TagTree
     self.tree = PubShelfTagTree(self.treeSplitter, -1, self.dbi, self.conf)
@@ -36,22 +49,20 @@ class PubShelfFrame(wx.Frame):
     self.itemList = PubShelfItemList(self.itemSplitter, -1, self.dbi, self.conf)
 
     ## ItemContent
-    self.itemContent = PubShelfItemContent(self.itemSplitter, -1, conf)
+    self.itemContent = PubShelfItemContent(self.itemSplitter, -1, self.conf)
     
     ## Wrap Up
-    self.itemSplitter.SplitHorizontally(self.itemList, self.itemContent)
-    self.treeSplitter.SplitVertically(self.tree, self.itemSplitter)
-    self.treeSplitter.SetSashPosition(treePaneWidth)
-    self.Centre()
+    self.itemSplitter.SplitHorizontally(self.itemList, self.itemContent,
+                                      itemListHeight)
+    self.treeSplitter.SplitVertically(self.tree, self.itemSplitter, 
+                                      treePaneWidth)
 
-  #def OnListItemSelected(self, event):
-  #  nickname = event.GetItem().GetText()
-  #  pubitem = self.dbi.get_pubitem_by_nickname( nickname )
-  #  self.itemContent.SetPage(
-  #    'Here is some <b>formatted</b> <font color="red">text</font>'
-  #    'Here is some <b>formatted</b> <font color="red">text</font>'
-  #    'Here is some <b>formatted</b> <font color="red">text</font>'
-  #    '<a href="file:///home/linusben/Desktop/forcjn.pdf">PDF</a>'
-  #    '<a href="file:///usr/share/doc/python2.5-doc/html/tut/tut.html">HTML</A>'
-  #    )
-  #  event.Skip()
+  def NewItemDialog(self, event):
+    self.new_dialog = PubShelfNewItemDialog(None, -1)
+    self.new_dialog.ShowModal()
+    self.new_dialog.Destroy()
+  
+  def SearchDialog(self, event):
+    self.search_dialog = PubShelfSearchDialog(None, -1)
+    self.search_dialog.ShowModal()
+    self.search_dialog.Destroy()
