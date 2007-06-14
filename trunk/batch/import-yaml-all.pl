@@ -14,7 +14,7 @@ my $data = YAML::LoadFile( $ARGV[0] );
 =cut
 
 my $ps = new PubShelf('test');
-foreach my $yaml_file (`ls ../data/*.yaml`) {
+foreach my $yaml_file (`ls ./data/*.yaml`) {
   next if( $yaml_file =~ /template/ );
   chomp($yaml_file);
   print STDERR "Loading $yaml_file ...\n";

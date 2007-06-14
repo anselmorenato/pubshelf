@@ -1,2 +1,2 @@
 #!/bin/bash
-sqlite3 ../db/pubshelf.db < ../schema/pubshelf.sqlite3
+sqlite3 ../db/pubshelf.db < ../etc/pubshelf_sqlite3.sql

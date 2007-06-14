@@ -35,6 +35,7 @@ CREATE TABLE tags (
   name              TEXT NOT NULL DEFAULT '',
   created_at        DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
 CREATE INDEX tags_idx ON tags (category, name);
 
 CREATE TABLE tags_pubitems (
