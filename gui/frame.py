@@ -1,6 +1,6 @@
 import wx
 from menu import PubShelfMenuBar
-from dialog_new import PubShelfNewItemDialog
+from dialog_pubitem import PubShelfPubItemDialog
 from dialog_search import PubShelfSearchDialog
 from main_tree import PubShelfTagTree
 from main_list import PubShelfItemList
@@ -31,7 +31,7 @@ class PubShelfFrame(wx.Frame):
     toolbar.AddSimpleTool(2,
         wx.Image('../icon/search.png',wx.BITMAP_TYPE_PNG).ConvertToBitmap())
     toolbar.AddSeparator()
-    self.Bind(wx.EVT_TOOL, self.NewItemDialog, id=1)
+    self.Bind(wx.EVT_TOOL, self.PubItemDialog, id=1)
     self.Bind(wx.EVT_TOOL, self.SearchDialog, id=2)
  
     ## Splitter 
@@ -58,8 +58,8 @@ class PubShelfFrame(wx.Frame):
     self.treeSplitter.SplitVertically(self.tree, self.itemSplitter, 
                                       treePaneWidth)
 
-  def NewItemDialog(self, event):
-    self.new_dialog = PubShelfNewItemDialog(None, -1)
+  def PubItemDialog(self, event):
+    self.new_dialog = PubShelfPubItemDialog(None, -1)
     self.new_dialog.ShowModal()
     self.new_dialog.Destroy()
   

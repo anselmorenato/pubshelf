@@ -1,3 +1,4 @@
+home_path: /home/linusben/Desktop/
 dbpath: ../db.test/
 dbname: pubshelf.db
 apps:
