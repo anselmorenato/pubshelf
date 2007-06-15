@@ -6,10 +6,11 @@ from data import *
 ID_SUBMIT_BUTTON = 2000
 ID_CLOSE_BUTTON = 2001
 ID_FILE_SELECT_BUTTON = 2010
-ID_FILE_ADD_BUTTON = 2011
-ID_FILE_DELETE_BUTTON = 2012
+ID_URI_ADD_BUTTON = 2011
+ID_URI_DELETE_BUTTON = 2012
 ID_TAG_ADD_BUTTON  = 2020
 ID_TAG_DELETE_BUTTON  = 2021
+AVAILABLE_PUB_TYPES = ['paper','book']
 
 pubItemDialogSize = (600,600)
 pubItemLabelSize = (90,25)
@@ -19,8 +20,8 @@ pubItemMediumFormSize = (350,25)
 pubItemListSize = (420,75)
 pubItemLabelXPos = 10
 pubItemFormXPos  = 100
-pubItemFileSelectButtonXPos = 460
-pubItemFileAddButtonXPos = 530
+pubItemButton1XPos = 460
+pubItemButton2XPos = 530
 pubItemYPosInit = 10
 pubItemYPosStep = 30
 
@@ -35,49 +36,60 @@ class PubShelfPubItemDialog(wx.Dialog):
 
     self.conf = conf
     self.tag_list = []
-    self.file_list = []
+    self.uri_list = []
 
     panel = wx.Panel(self, -1)
 
     ## Basic elements
     self.forms = dict()
 
-    labels = ['ID','Nickname','Pub type']
+    labels = ['ID','Nickname','Pub type','Title','Authors','Journal',
+              'Publisher','Volume','Page','Pub Year']
+    form_size = { 'ID':pubItemSmallFormSize, 
+                  'Nickname':pubItemSmallFormSize,
+                  'Pub type':pubItemSmallFormSize,
+                  'Title':pubItemLargeFormSize,
+                  'Authors':pubItemLargeFormSize,
+                  'Journal':pubItemLargeFormSize,
+                  'Publisher':pubItemLargeFormSize,
+                  'Volume':pubItemSmallFormSize,
+                  'Page':pubItemSmallFormSize,
+                  'Pub Year':pubItemSmallFormSize
+                  }
+    form_type = { 'ID':'StaticText', 'Nickname':'StaticText', 
+                  'Pub type':'ComboBox', 'Title':'TextCtrl',
+                  'Authors':'TextCtrl', 'Journal':'TextCtrl',
+                  'Publisher':'TextCtrl', 'Volume':'TextCtrl',
+                  'Page':'TextCtrl', 'Pub Year':'TextCtrl'
+                  }
+
     pubItemYPos = pubItemYPosInit
     for label in labels:
       wx.StaticText(panel, -1, label, size=pubItemLabelSize, 
                       pos = (pubItemLabelXPos, pubItemYPos))
-      self.forms[label] = wx.StaticText(panel, -1, '', 
-                            size=pubItemSmallFormSize,
-                            pos = (pubItemFormXPos, pubItemYPos))
+      if(label == 'Pub type'):
+        self.forms[label] = wx.ComboBox(panel, -1, choices=AVAILABLE_PUB_TYPES,
+                              size=form_size[label], style=wx.CB_READONLY,
+                              pos=(pubItemFormXPos, pubItemYPos))
+        self.forms[label].SetValue(AVAILABLE_PUB_TYPES[0])
+      elif(form_type[label] == 'StaticText'):
+        self.forms[label] = wx.StaticText(panel, -1, '', 
+                              size=form_size[label],
+                              pos = (pubItemFormXPos, pubItemYPos))
+      elif(form_type[label] == 'TextCtrl'):
+        self.forms[label] = wx.TextCtrl(panel, -1, '', 
+                              size=form_size[label],
+                              pos=(pubItemFormXPos, pubItemYPos))
       pubItemYPos += pubItemYPosStep
 
-    labels = ['Title','Authors','Journal','Publisher']
-    for label in labels:
-      wx.StaticText(panel, -1, label, size=pubItemLabelSize, 
-                      pos = (pubItemLabelXPos, pubItemYPos))
-      self.forms[label] = wx.TextCtrl(panel, -1, '', 
-                            size=pubItemLargeFormSize,
-                            pos = (pubItemFormXPos, pubItemYPos))
-      pubItemYPos += pubItemYPosStep
-
-    labels = ['Volume','Page','Pub Year']
-    for label in labels:
-      wx.StaticText(panel, -1, label, size=pubItemLabelSize, 
-                      pos = (pubItemLabelXPos, pubItemYPos))
-      self.forms[label] = wx.TextCtrl(panel, -1, '', 
-                            size=pubItemSmallFormSize,
-                            pos = (pubItemFormXPos, pubItemYPos))
-      pubItemYPos += pubItemYPosStep
-    
     ## Tag
     wx.StaticText(panel, -1, 'Tags', size=pubItemLabelSize, 
                   pos = (pubItemLabelXPos, pubItemYPos))
     self.tag_form = wx.TextCtrl(panel, -1, '', size=pubItemMediumFormSize,
-                      pos = (pubItemFormXPos, pubItemYPos))
-    tag_add_button = wx.Button(panel, ID_TAG_ADD_BUTTON, 'Add', 
-                          style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
-                          pos=(pubItemFileSelectButtonXPos, pubItemYPos))
+                      pos=(pubItemFormXPos, pubItemYPos))
+    wx.Button(panel, ID_TAG_ADD_BUTTON, 'Add', 
+                  style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
+                  pos=(pubItemButton1XPos, pubItemYPos))
     self.Bind(wx.EVT_BUTTON, self.AddTag, id=ID_TAG_ADD_BUTTON)
 
     ## Tag List
@@ -85,36 +97,36 @@ class PubShelfPubItemDialog(wx.Dialog):
     self.tag_list_form = wx.ListCtrl(panel, -1,
                             style=wx.LC_LIST, size=pubItemListSize,
                             pos=(pubItemFormXPos, pubItemYPos))
-    tag_delete_button = wx.Button(panel, ID_TAG_DELETE_BUTTON, 'Delete', 
+    wx.Button(panel, ID_TAG_DELETE_BUTTON, 'Delete', 
                           style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
-                          pos=(pubItemFileAddButtonXPos, pubItemYPos))
+                          pos=(pubItemButton2XPos, pubItemYPos))
     self.Bind(wx.EVT_BUTTON, self.DeleteTag, id=ID_TAG_DELETE_BUTTON)
     pubItemYPos += pubItemYPosStep*2
 
-    ## File
+    ## URI
     pubItemYPos += pubItemYPosStep
-    wx.StaticText(panel, -1, 'Files', size=pubItemLabelSize, 
+    wx.StaticText(panel, -1, 'URIs', size=pubItemLabelSize, 
                   pos = (pubItemLabelXPos, pubItemYPos))
-    self.file_form = wx.TextCtrl(panel, -1, '', size=pubItemMediumFormSize,
+    self.uri_form = wx.TextCtrl(panel, -1, '', size=pubItemMediumFormSize,
                   pos=(pubItemFormXPos, pubItemYPos))
-    file_button = wx.Button(panel, ID_FILE_SELECT_BUTTON, 'Choose', 
-                          style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
-                          pos=(pubItemFileSelectButtonXPos, pubItemYPos))
+    wx.Button(panel, ID_FILE_SELECT_BUTTON, 'File', 
+                  style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
+                  pos=(pubItemButton1XPos, pubItemYPos))
     self.Bind(wx.EVT_BUTTON, self.OpenFile, id=ID_FILE_SELECT_BUTTON)
-    add_file_button = wx.Button(panel, ID_FILE_ADD_BUTTON, 'Add', 
-                          style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
-                          pos=(pubItemFileAddButtonXPos, pubItemYPos))
-    self.Bind(wx.EVT_BUTTON, self.AddFile, id=ID_FILE_ADD_BUTTON)
+    wx.Button(panel, ID_URI_ADD_BUTTON, 'Add', 
+                  style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
+                  pos=(pubItemButton2XPos, pubItemYPos))
+    self.Bind(wx.EVT_BUTTON, self.AddURI, id=ID_URI_ADD_BUTTON)
     
-    ## File List
+    ## URI List
     pubItemYPos += pubItemYPosStep
-    self.file_list_form = wx.ListCtrl(panel, -1,
+    self.uri_list_form = wx.ListCtrl(panel, -1,
                             style=wx.LC_LIST, size=pubItemListSize,
                             pos=(pubItemFormXPos, pubItemYPos))
-    file_delete_button = wx.Button(panel, ID_FILE_DELETE_BUTTON, 'Delete', 
-                          style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
-                          pos=(pubItemFileAddButtonXPos, pubItemYPos))
-    self.Bind(wx.EVT_BUTTON, self.DeleteFile, id=ID_FILE_DELETE_BUTTON)
+    wx.Button(panel, ID_URI_DELETE_BUTTON, 'Delete', 
+                   style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
+                   pos=(pubItemButton2XPos, pubItemYPos))
+    self.Bind(wx.EVT_BUTTON, self.DeleteURI, id=ID_URI_DELETE_BUTTON)
     pubItemYPos += pubItemYPosStep*2
     
     ## Buttons
@@ -128,47 +140,54 @@ class PubShelfPubItemDialog(wx.Dialog):
     
     self.Centre()
 
+  def SetPubItem(self, pubitem):
+    self.forms['ID'].SetLabel( "%d" % pubitem.id )
+    self.forms['Nickname'].SetLabel( pubitem.nickname )
+    self.forms['Title'].SetValue( pubitem.title )
+    self.forms['Authors'].SetValue( pubitem.authors )
+    self.forms['Journal'].SetValue( pubitem.journal )
+    self.forms['Publisher'].SetValue( pubitem.publisher )
+    self.forms['Volume'].SetValue( pubitem.volume )
+    self.forms['Page'].SetValue( pubitem.page )
+    self.forms['Pub Year'].SetValue( "%d" % pubitem.pub_year )
+    for tag in pubitem.tags:
+      self.tag_list.append("%s::%s" % (tag.category, tag.name))
+    for link in pubitem.links:
+      self.uri_list.append("%s" % link.uri)
+    
+    self.RefreshList(self.tag_list, self.tag_list_form)
+    self.RefreshList(self.uri_list, self.uri_list_form)
+
   def OnClose(self, event):
     self.Close()
  
   def AddTag(self, event):
     if(self.tag_list.count(self.tag_form.GetValue()) == 0):
       self.tag_list.append(self.tag_form.GetValue())
-
-    self.RefreshTagList()
-
-  def AddFile(self, event):
-    if(self.file_list.count(self.file_form.GetValue()) == 0):
-      self.file_list.append(self.file_form.GetValue())
-
-    self.RefreshFileList()
-
+    self.RefreshList(self.tag_list, self.tag_list_form)
+  
   def DeleteTag(self, event):
     for selected_tag in self.SelectedItemText(self.tag_list_form):
       self.tag_list.remove(selected_tag)
-    
-    self.RefreshTagList()
+    self.RefreshList(self.tag_list, self.tag_list_form)
 
-  def DeleteFile(self, event):
-    for selected_file in self.SelectedItemText(self.file_list_form):
-      self.file_list.remove(selected_file)
-    
-    self.RefreshFileList()
+  def AddURI(self, event):
+    if(self.uri_list.count(self.uri_form.GetValue()) == 0):
+      self.uri_list.append(self.uri_form.GetValue())
+    self.RefreshList(self.uri_list, self.uri_list_form)
 
-  def RefreshTagList(self):
-    self.tag_list_form.DeleteAllItems()
+  def DeleteURI(self, event):
+    for selected_uri in self.SelectedItemText(self.uri_list_form):
+      self.uri_list.remove(selected_uri)
+    self.RefreshList(self.uri_list, self.uri_list_form)
+
+  def RefreshList(self,list,list_form):
+    list_form.DeleteAllItems()
     idx = 0
-    for tag in self.tag_list:
-      self.tag_list_form.InsertStringItem(idx,tag)
+    for item in list:
+      list_form.InsertStringItem(idx,item)
       idx += 1
     
-  def RefreshFileList(self):
-    self.file_list_form.DeleteAllItems()
-    idx = 0
-    for tag in self.file_list:
-      self.file_list_form.InsertStringItem(idx,tag)
-      idx += 1
-
   def SelectedItemText(self, listctrl):
     rv = []
     selected_idx = listctrl.GetFirstSelected()
@@ -181,8 +200,7 @@ class PubShelfPubItemDialog(wx.Dialog):
       selected_idx = listctrl.GetNextSelected(selected_idx)
       if( selected_idx < 0 ):
         break
-      else:
-        rv.append( listctrl.GetItemText(selected_idx) )
+      rv.append( listctrl.GetItemText(selected_idx) )
 
     return rv
 
@@ -192,7 +210,7 @@ class PubShelfPubItemDialog(wx.Dialog):
                         "", "*.*", wx.OPEN)
     if( file_dialog.ShowModal() == wx.ID_OK ):
       file_path = file_dialog.GetPath()
-      self.file_form.SetValue(file_path)
+      self.uri_form.SetValue(file_path)
 
     file_dialog.Destroy()
     

@@ -35,6 +35,15 @@ class PubItem:
     if( self.page ):
       rv += ", %s" % self.page
     return rv
+  
+  def get_html_citation(self):
+    rv = "%s, <b>%s</b>, <i>%s</i>" % (self.authors,self.title,self.journal)
+    if( self.volume ):
+      rv += ", %s" % self.volume
+    if( self.page ):
+      rv += ":%s" % self.page
+    rv += " (%s)" % self.pub_year
+    return rv
 
 class Link:
   def __init__(self, id=0, pubitem_id=0, name='', uri='', uri_type=''\
