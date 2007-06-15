@@ -1,0 +1,16 @@
+title: The human disease network
+journal: Proc. Natl. Acad. Sci. U.S.A.
+authors: Goh KI, Cusick ME, Valle D, Childs D, Vidal M, Barabási AL
+pub_type: paper
+pub_year: 2007
+volume: 104(21)
+page: 8685-90
+comments: 
+  - title: Abstract
+    textbody: A network of disorders and disease genes linked by known disorder-gene associations offers a platform to explore in a single graph-theoretic framework all known phenotype and disease gene associations, indicating the common genetic origin of many diseases. Genes associated with similar disorders show both higher likelihood of physical interactions between their products and higher expression profiling similarity for their transcripts, supporting the existence of distinct disease-specific functional modules. We find that essential human genes are likely to encode hub proteins and are expressed widely in most tissues. This suggests that disease genes also would play a central role in the human interactome. In contrast, we find that the vast majority of disease genes are nonessential and show no tendency to encode hub proteins, and their expression pattern indicates that they are localized in the functional periphery of the network. A selection-based model explains the observed difference between essential and disease genes and also suggests that diseases caused by somatic mutations should not be peripheral, a prediction we confirm for cancer genes.
+links:
+  - http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&Cmd=ShowDetailView&TermToSearch=17502601
+tags:
+  - Author::AlbertLaszloBarabasi
+  - Author::MarcVidal
+  - Topic::Network
