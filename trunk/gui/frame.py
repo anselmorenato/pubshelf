@@ -25,12 +25,14 @@ class PubShelfFrame(wx.Frame):
     self.statusbar = self.CreateStatusBar();
 
     ## ToolBar
-    toolbar = self.CreateToolBar();
-    toolbar.AddSimpleTool(1, 
-        wx.Image('../icon/new.png',wx.BITMAP_TYPE_PNG).ConvertToBitmap()) 
-    toolbar.AddSimpleTool(2,
-        wx.Image('../icon/search.png',wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+    toolbar = self.CreateToolBar(wx.TB_TEXT);
+    toolbar.SetToolBitmapSize((20,20))
+    tool_image_new = wx.Bitmap("../icon/new.png", wx.BITMAP_TYPE_PNG)
+    tool_image_search = wx.Bitmap("../icon/search.png", wx.BITMAP_TYPE_PNG)
+    toolbar.AddSimpleTool(1, tool_image_new, "New")
+    toolbar.AddSimpleTool(2, tool_image_search, "Search")
     toolbar.AddSeparator()
+    toolbar.Realize()
     self.Bind(wx.EVT_TOOL, self.PubItemDialog, id=1)
     self.Bind(wx.EVT_TOOL, self.SearchDialog, id=2)
  
@@ -63,6 +65,6 @@ class PubShelfFrame(wx.Frame):
     self.new_dialog.Destroy()
   
   def SearchDialog(self, event):
-    self.search_dialog = PubShelfSearchDialog(None, -1)
+    self.search_dialog = PubShelfSearchDialog(None, -1, self.conf)
     self.search_dialog.ShowModal()
     self.search_dialog.Destroy()

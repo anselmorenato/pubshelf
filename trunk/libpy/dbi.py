@@ -1,11 +1,14 @@
+from os import access
 from pysqlite2 import dbapi2 as sqlite
 from data import PubItem, Link, Comment, Tag;
 
 class PubShelfDBI:
   def __init__(self, conf):
     db_file = conf['dbpath']+conf['dbname'];
-    self.conn = sqlite.connect(db_file);
-    #self.conn = sqlite3.connect(db_file);
+    try:
+      self.conn = sqlite.connect(db_file);
+    except:
+      print "Database error : check %s" % db_file
 
   def get_tags(self):
     rv = dict();
@@ -19,6 +22,17 @@ class PubShelfDBI:
     
     return rv.values()
   
+  def insert_pubitem(self, pubitem):
+    self.conn.execute('INSERT INTO pubitems
+              (nickname, pub_type, title, authors, journal, publisher, 
+              volume, page, pub_year) VALUES (?,?,?,?,?,?,?,?,?)',
+              (pubitem.nickname, pubitem.pub_type, pubitem.title, 
+              pubitem.authors, pubitem.journal, pubitem.publisher, 
+              pubitem.volume, pubitem.page, pubitem.pub_year))
+    for link in pubitem.links:
+      self.conn.execute('INSERT INTO links (pubitem_id, uri) VALUES (?,?)',
+              (pubitem_id, link.uri))
+    
   def get_pubitems_by_tag(self, tag_category, tag_name):
     rv = [];
     sql = "SELECT DISTINCT p.id, p.nickname, p.pub_type, p.title, p.authors, \
@@ -62,10 +76,10 @@ class PubShelfDBI:
 
   def get_links_by_pubitem(self, pubitem):
     rv = []
-    sql = "SELECT name, uri, uri_type FROM links WHERE pubitem_id='%d'"\
+    sql = "SELECT uri FROM links WHERE pubitem_id='%d'"\
           % (pubitem.id)
     for row in self.conn.execute(sql):
-      rv.append( Link(name=row[0], uri=row[1], uri_type=row[2]) )
+      rv.append( Link(uri=row[0]) )
     return rv
 
   def get_tags_by_pubitem(self, pubitem):

@@ -1,0 +1,3 @@
+Required python libraries
+ - yaml 3.05 (http://pyyaml.org/wiki/PyYAML)
+ - pysqlite 2.3.3  (http://www.initd.org/tracker/pysqlite/wiki/pysqlite) 

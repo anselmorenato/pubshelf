@@ -15,9 +15,7 @@ CREATE TABLE pubitems (
 CREATE TABLE links (
   id          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   pubitem_id  INTEGER NOT NULL,
-  name        TEXT NOT NULL DEFAULT '',
   uri         TEXT NOT NULL DEFAULT '',
-  uri_type    TEXT NOT NULL DEFAULT 'pdf',
   created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
