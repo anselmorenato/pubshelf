@@ -43,28 +43,42 @@ class PubItem:
     rv += self.get_volume_page() + " (%d)" % self.pub_year
     return rv
 
+  def get_volume_page(self):
+    rv = ''
+    if( self.volume ): rv += ", %s" % self.volume
+    if( self.page ): rv += ":%s" % self.page
+    return rv
+
   def get_nickname_base(self):
     first_author = self.authors.split(',')[0]
     first_author_surname  = re.sub(r'[A-Z\-]+$','',first_author)
     first_author_surname  = re.sub(r'\s+','',first_author_surname)
     return "%s%d" % (first_author_surname,self.pub_year)
 
-  def get_volume_page(self):
-    rv = ''
-    if( self.volume ): rv += ", %s" % self.volume
-    if( self.page ): rv += ":%s" % self.page
-    return rv
-  
+  def set_nickname(self):
+    cur = self.dbi.conn.cursor()
+    sql = "SELECT count(id) FROM pubitems WHERE nickname like '"
+    sql += self.get_nickname_base()+"%'"
+    cur.execute(sql)
+    self.nickname = "%s.%d" % (self.get_nickname_base(), cur.fetchone()[0]+1)
+
   def insert(self):
-    self.dbi.execute("INSERT INTO pubitems\
+    cur = self.dbi.conn.cursor()
+    if( self.nickname == '' ): self.set_nickname()
+    try:
+      cur.execute("INSERT INTO pubitems\
               (nickname, pub_type, title, authors, journal, publisher,\
               volume, page, pub_year) VALUES (?,?,?,?,?,?,?,?,?)",
-              (pubitem.nickname, pubitem.pub_type, pubitem.title,
-              pubitem.authors, pubitem.journal, pubitem.publisher,
-              pubitem.volume, pubitem.page, pubitem.pub_year))
-    for link in pubitem.links:
-      self.conn.execute('INSERT INTO links (pubitem_id, uri) VALUES (?,?)',
-              (pubitem_id, link.uri))
+              (self.nickname, self.pub_type, self.title,
+              self.authors, self.journal, self.publisher,
+              self.volume, self.page, self.pub_year))
+      self.dbi.conn.commit()
+    except:
+      print "Error in insert PubItem"
+    #for link in self.links:
+    #  self.dbi.conn.execute('INSERT INTO links (pubitem_id, uri) VALUES (?,?)',
+    #          (self_id, link.uri))
+
 """
   def find_by_tag(self, category, name):
     rv = [];
