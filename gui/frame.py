@@ -54,12 +54,11 @@ class PubShelfFrame(wx.Frame):
     ## Wrap Up
     self.itemSplitter.SplitHorizontally(self.itemList, self.itemContent,
                                       itemListHeight)
-    self.itemSplitter.SetSashPosition(itemListHeight)
     self.treeSplitter.SplitVertically(self.tree, self.itemSplitter, 
                                       treePaneWidth)
 
   def PubItemDialog(self, event):
-    self.new_dialog = PubShelfPubItemDialog(None, -1)
+    self.new_dialog = PubShelfPubItemDialog(None, -1, self.conf)
     self.new_dialog.ShowModal()
     self.new_dialog.Destroy()
   

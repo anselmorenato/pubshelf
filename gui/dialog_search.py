@@ -1,8 +1,9 @@
 import wx, wx.html
+from string import atoi
 import sys
 sys.path.append('../libpy/')
 from pubmed import *
-from string import atoi
+from dialog_pubitem import PubShelfPubItemDialog
 
 ID_SEARCH_BUTTON = 3000
 ID_CLOSE_BUTTON = 3001
@@ -29,8 +30,9 @@ AVAILABLE_SITES = ['pubmed','google scholar']
 PUBMED_RETMAX = '50'
 
 class PubShelfSearchDialog(wx.Dialog):
-  def __init__(self, parent, id):
+  def __init__(self, parent, id, conf):
     wx.Dialog.__init__(self, parent, id, 'Search', size=searchDialogSize)
+    self.conf = conf
 
     panel = wx.Panel(self, -1)
 
@@ -64,7 +66,8 @@ class PubShelfSearchDialog(wx.Dialog):
                                     width=searchResultTitleWidth)
     self.search_results.InsertColumn(2, 'Year',
                                     width=searchResultPubYearWidth)
-  
+    self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.LaunchPubItemDialog)
+   
     ## Closing window
     close_button = wx.Button(panel, ID_CLOSE_BUTTON, 'Close', 
                           style=wx.BU_EXACTFIT,
@@ -89,6 +92,14 @@ class PubShelfSearchDialog(wx.Dialog):
 
     self.search_log.SetLabel(log_text)
     self.search_results.DeleteAllItems()
+    self.pubitem_list = []
     for pubitem in articles:
       entry = [pubitem.authors, pubitem.title, pubitem.pub_year]
       self.search_results.Append(entry)
+    
+  def LaunchPubItemDialog(self, event):
+    idx = event.GetItem().GetId()
+    dialog = PubShelfPubItemDialog(None, -1, self.conf)
+    dialog.SetPubItem(self.pubitem_list[idx])
+    dialog.ShowModal()
+    dialog.Destroy()

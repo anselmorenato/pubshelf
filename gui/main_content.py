@@ -12,21 +12,31 @@ class PubShelfItemContent(wx.html.HtmlWindow):
       self.SetStandardFonts()
 
   def set_pubitem(self, pubitem):
-    rv = "<TABLE><TR><TD>%s,<b>%s</b>,<i>%s</i>,<b><i>%s</i></b></TD></TR>" \
-        % (pubitem.authors, pubitem.pub_year, pubitem.title, pubitem.journal)
+    rv = "<TABLE><TR><TD BGCOLOR='blue'>"
+    rv += "<FONT COLOR='white'><B>Citation</B></FONT></TD></TR>"
+    rv += "<TR><TD>"+pubitem.get_html_citation()+"</TD></TR>"
 
-    rv += "<TR><TD>Tags : "
-    for tag in pubitem.tags:
-      rv += "%s:%s " % (tag.category, tag.name)
-    rv += "</TD></TR>"
-      
-    for comment in pubitem.comments:
-      rv += "<TR><TD>%s</TD></TR><TR><TD>%s</TD></TR>"\
-            % (comment.title, comment.textbody)
-
+    rv += "<TR><TD BGCOLOR='blue'><font color='white'><b>Links</b></font>"
+    rv += "</TD></TR><TR><TD><UL>"
     for link in pubitem.links:
-      rv += "<TR><TD><A HREF='%s'>%s</A></TD></TR>" % (link.uri, link.name)
+      rv += "<LI><A HREF='%s'>%s</A>" % (link.uri, link.name)
+    rv += "</UL></TD></TR>"
+
+    rv += "<TR><TD BGCOLOR='blue'><FONT color='white'><b>Tags</b></FONT>"
+    rv += "</TD></TR><TR><TD><UL>"
+    for tag in pubitem.tags:
+      rv += "<LI> %s:%s " % (tag.category, tag.name)
+    rv += "</UL></TD></TR>"
+      
+    #rv += "<TR><TD BGCOLOR='blue'><font color='white'><b>Comments</b></font>"
+    #rv += "</TD></TR><TR><TD>"
+    #for comment in pubitem.comments:
+    #  rv += "<B>%s</B><BR>" % comment.title
+    #  rv += "%s<BR><BR>" % comment.textbody
+    #rv += "</TD></TR>"
+
     rv += "</TABLE>"
+
     self.SetPage( rv )
 
   def OnLinkClicked(self, link):
