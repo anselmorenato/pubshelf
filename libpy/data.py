@@ -1,53 +1,5 @@
-class PubItem:
-  def __init__(self, id=0, nickname='', title='', authors='', journal=''\
-               , publisher='', volume='', page='', pub_year=0, pub_type=''\
-               , created_at=''):
-    self.id = id
-    self.nickname = nickname
-    self.title = title
-    self.authors = authors
-    self.journal = journal
-    self.publisher = publisher
-    self.volume = volume
-    self.page = page
-    self.pub_year = pub_year
-    self.pub_type = pub_type
-    self.created_at = created_at
-
-    self.tags = []
-    self.comments = []
-    self.links = []
-  
-  def set_tags(self,tags):
-    self.tags = tags
-  
-  def set_links(self,links):
-    self.links = links
-
-  def set_comments(self,comments):
-    self.comments = comments
-
-  def get_citation(self):
-    rv = "%s, %s, %s" % (self.authors,self.title,self.journal)
-    if( self.volume ):
-      rv += ", %s" % self.volume
-    if( self.page ):
-      rv += ", %s" % self.page
-    rv += " (%d)" % self.pub_year
-    return rv
-  
-  def get_html_citation(self):
-    rv = "%s, <b>%s</b>, <i>%s</i>" % (self.authors,self.title,self.journal)
-    if( self.volume ):
-      rv += ", %s" % self.volume
-    if( self.page ):
-      rv += ":%s" % self.page
-    rv += " (%d)" % self.pub_year
-    return rv
-
 class Link:
-  def __init__(self, id=0, pubitem_id=0, name='', uri='', uri_type=''\
-                , created_at=''):
+  def __init__(self, id=0, pubitem_id=0, uri='', created_at=''):
     self.id = id
     self.pubitem_id = pubitem_id
     self.uri = uri

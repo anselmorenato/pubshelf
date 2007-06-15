@@ -1,6 +1,6 @@
 import wx, wx.html
 import sys, os
-sys.path.append('./libpy/')
+sys.path.append('../libpy/')
 from data import *
 
 ID_SUBMIT_BUTTON = 2000

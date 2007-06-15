@@ -1,5 +1,5 @@
 home_path: /home/linusben/Desktop/
-dbpath: ../db.test/
+dbpath: ./db.test/
 dbname: pubshelf.db
 apps:
   pdf: /usr/bin/acroread
