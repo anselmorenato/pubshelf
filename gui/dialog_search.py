@@ -24,7 +24,7 @@ searchResultAuthorWidth = 100
 searchResultTitleWidth = 410
 searchResultPubYearWidth = 50
 searchCloseButtonSize = (100,30)
-searchCloseButtonPos = (250,560)
+searchCloseButtonPos = (250,550)
 
 AVAILABLE_SITES = ['pubmed','google scholar']
 PUBMED_RETMAX = '50'
@@ -96,9 +96,10 @@ class PubShelfSearchDialog(wx.Dialog):
     for pubitem in articles:
       entry = [pubitem.authors, pubitem.title, pubitem.pub_year]
       self.search_results.Append(entry)
+      self.pubitem_list.append( pubitem )
     
   def LaunchPubItemDialog(self, event):
-    idx = event.GetItem().GetId()
+    idx = event.GetIndex()
     dialog = PubShelfPubItemDialog(None, -1, self.conf)
     dialog.SetPubItem(self.pubitem_list[idx])
     dialog.ShowModal()

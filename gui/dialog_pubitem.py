@@ -27,8 +27,8 @@ pubItemYPosStep = 30
 
 pubItemButtonSize = (100,25)
 pubItemSmallButtonSize = (60,25)
-pubItemSubmitButtonPos = (190,560)
-pubItemCloseButtonPos = (310,560)
+pubItemSubmitButtonPos = (190,550)
+pubItemCloseButtonPos = (310,550)
 
 class PubShelfPubItemDialog(wx.Dialog):
   def __init__(self, parent, id, conf):

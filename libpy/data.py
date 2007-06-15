@@ -1,6 +1,6 @@
 class PubItem:
   def __init__(self, id=0, nickname='', title='', authors='', journal=''\
-               , publisher='', volume='', page='', pub_year='', pub_type=''\
+               , publisher='', volume='', page='', pub_year=0, pub_type=''\
                , created_at=''):
     self.id = id
     self.nickname = nickname
@@ -28,12 +28,12 @@ class PubItem:
     self.comments = comments
 
   def get_citation(self):
-    rv = "%s, %s, %s, %s" \
-          % (self.authors, self.pub_year, self.title, self.journal)
+    rv = "%s, %s, %s" % (self.authors,self.title,self.journal)
     if( self.volume ):
       rv += ", %s" % self.volume
     if( self.page ):
       rv += ", %s" % self.page
+    rv += " (%d)" % self.pub_year
     return rv
   
   def get_html_citation(self):
@@ -42,7 +42,7 @@ class PubItem:
       rv += ", %s" % self.volume
     if( self.page ):
       rv += ":%s" % self.page
-    rv += " (%s)" % self.pub_year
+    rv += " (%d)" % self.pub_year
     return rv
 
 class Link:
@@ -50,9 +50,7 @@ class Link:
                 , created_at=''):
     self.id = id
     self.pubitem_id = pubitem_id
-    self.name = name
     self.uri = uri
-    self.uri_type = uri_type
     self.created_at = created_at
 
 class Comment:

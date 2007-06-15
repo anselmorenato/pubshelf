@@ -1,6 +1,7 @@
 #!/usr/bin/python 
 import urllib, re, xml.sax
-from data import PubItem
+from string import atoi
+from data import PubItem, Link
 
 class PubmedSearchHandler(xml.sax.ContentHandler):
   element_array = []
@@ -80,9 +81,10 @@ class PubmedFetchHandler(xml.sax.ContentHandler):
     self.element_array.pop()
 
   def characters(self, content):
-    pubmed_link_url = 'http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&Cmd=ShowDetailView&TermToSearch=%s'
+    pubmed_link_uri = 'http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&Cmd=ShowDetailView&TermToSearch=%s'
     if( self.element_array == self.pubmed_id_tag ):
-      self.article.tags.append( pubmed_link_url % content)
+      pubmed_uri = pubmed_link_uri % content
+      self.article.links.append( Link(uri=pubmed_uri) )
     elif( self.element_array == self.journal_title_tag ):
       self.article.journal = content
     elif( self.element_array == self.article_title_tag ):
@@ -94,7 +96,7 @@ class PubmedFetchHandler(xml.sax.ContentHandler):
     elif( self.element_array == self.page_tag ):
       self.article.page = content
     elif( self.element_array == self.pub_year_tag ):
-      self.article.pub_year = content
+      self.article.pub_year = atoi(content)
     elif( self.element_array == self.author_last_name_tag ):
       self.author.last_name = content
     elif( self.element_array == self.author_first_name_tag ):
