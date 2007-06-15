@@ -1,7 +1,7 @@
 import wx, wx.html
 from string import atoi
 import sys
-sys.path.append('./libpy/')
+sys.path.append('../libpy/')
 from pubmed import *
 from dialog_pubitem import PubShelfPubItemDialog
 
