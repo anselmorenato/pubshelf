@@ -1,4 +1,7 @@
 import wx
+import sys
+sys.path.append('../libpy/')
+from model_tag import Tag
 
 class PubShelfTagTree(wx.TreeCtrl):
   def __init__(self, parent, id, dbi, conf):
@@ -9,7 +12,7 @@ class PubShelfTagTree(wx.TreeCtrl):
 
     root = self.AddRoot('Root')
     category = dict()
-    for tag in dbi.get_tags():
+    for tag in Tag.get_tags():
       if(not category.has_key(tag.category)):
         category[tag.category] = self.AppendItem(root, tag.category)
       self.AppendItem(category[tag.category], tag.name)

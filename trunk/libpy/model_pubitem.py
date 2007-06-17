@@ -22,7 +22,9 @@ class PubItem:
     self.comments = []
     self.links = []
     
-    self.dbi  = PubShelfDBI()
+  def get_dbi(self):
+    if(! self.dbi): self.dbi = PubShelfDBI()
+    return self.dbi
 
   def set_tags(self,tags):
     self.tags = tags
@@ -56,14 +58,14 @@ class PubItem:
     return "%s%d" % (first_author_surname,self.pub_year)
 
   def set_nickname(self):
-    cur = self.dbi.conn.cursor()
+    cur = self.get_dbi().conn.cursor()
     sql = "SELECT count(id) FROM pubitems WHERE nickname like '"
     sql += self.get_nickname_base()+"%'"
     cur.execute(sql)
     self.nickname = "%s.%d" % (self.get_nickname_base(), cur.fetchone()[0]+1)
 
   def insert(self):
-    cur = self.dbi.conn.cursor()
+    cur = self.get_dbi().conn.cursor()
     if( self.nickname == '' ): self.set_nickname()
     try:
       cur.execute("INSERT INTO pubitems\
@@ -72,7 +74,7 @@ class PubItem:
               (self.nickname, self.pub_type, self.title,
               self.authors, self.journal, self.publisher,
               self.volume, self.page, self.pub_year))
-      self.dbi.conn.commit()
+      self.get_dbi().conn.commit()
     except:
       print "Error in insert PubItem"
     #for link in self.links:

@@ -10,8 +10,8 @@ from frame import PubShelfFrame
 
 class PubShelfGUI(wx.App):
   def OnInit(self):
-    conf = PubShelfConf('./conf/pubshelf.yaml')
-    dbi = PubShelfDBI(conf)
+    conf = PubShelfConf()
+    dbi = PubShelfDBI()
     frame = PubShelfFrame(None, -1, 'PubShelf', dbi, conf)
     frame.Show(True)
     self.SetTopWindow(frame)
