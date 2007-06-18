@@ -12,4 +12,4 @@ class PubShelfConf:
     try:
       self.item = yaml.load( file(file_path,'r') )
     except:
-      print "Error to open config file pubshelf.yaml"
+      print "Error to open yaml files under ../conf/"

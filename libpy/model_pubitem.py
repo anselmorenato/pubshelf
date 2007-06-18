@@ -1,8 +1,12 @@
 #from data import Tag, Link, Comment
 import sys,re
 from dbi import PubShelfDBI
+from model import PubShelfModel
+from model_tag import Tag
+from model_comment import Comment
+from model_link import Link
 
-class PubItem:
+class PubItem(PubShelfModel):
   def __init__(self, id=0, nickname='', title='', authors='', journal=''\
                , publisher='', volume='', page='', pub_year=0, pub_type=''\
                , created_at=''):
@@ -22,22 +26,6 @@ class PubItem:
     self.comments = []
     self.links = []
     
-  def get_dbi(self):
-    try:
-      return self.dbi
-    except:
-      self.dbi = PubShelfDBI()
-      return self.dbi
-
-  def set_tags(self,tags):
-    self.tags = tags
-  
-  def set_links(self,links):
-    self.links = links
-
-  def set_comments(self,comments):
-    self.comments = comments
-
   def get_citation(self):
     rv = "%s, %s, %s" % (self.authors,self.title,self.journal)
     rv += self.get_volume_page() + " (%d)" % self.pub_year
@@ -68,9 +56,9 @@ class PubItem:
     self.nickname = "%s.%d" % (self.get_nickname_base(), cur.fetchone()[0]+1)
 
   def insert(self):
-    cur = self.get_dbi().conn.cursor()
     if( self.nickname == '' ): self.set_nickname()
     try:
+      cur = self.get_dbi().conn.cursor()
       cur.execute("INSERT INTO pubitems\
               (nickname, pub_type, title, authors, journal, publisher,\
               volume, page, pub_year) VALUES (?,?,?,?,?,?,?,?,?)",
@@ -78,64 +66,95 @@ class PubItem:
               self.authors, self.journal, self.publisher,
               self.volume, self.page, self.pub_year))
       pubitem_id = cur.lastrowid
+
+      for link in self.links:
+        cur.execute("INSERT INTO links (pubitem_id, uri) VALUES (?,?)",
+              (pubitem_id, link.uri))
+      for comment in self.comments:
+        cur.execute("INSERT INTO comments (pubitem_id, title, textbody) \
+                      VALUES (?,?,?)", 
+                      (pubitem_id, comment.title, comment.textbody))
+      t = Tag()
       for tag in self.tags:
-        cur.execute("INSERT INTO tags (category, name) VALUES (?,?)",
-              (tag.category, tag.name))
+        tag_id = t.find_by_name_and_category(cur, tag.name, tag.category)
+        cur.execute("INSERT INTO tags_pubitems \
+                      (pubitem_id, tag_id) VALUES (?,?)", 
+                      (pubitem_id, tag_id))
       self.get_dbi().conn.commit()
     except:
       print "Error in insert PubItem"
+      raise
 
-      
-    #for link in self.links:
-    #  self.dbi.conn.execute('INSERT INTO links (pubitem_id, uri) VALUES (?,?)',
-    #          (self_id, link.uri))
+  def set_links(self):
+    cur = self.get_dbi().conn.cursor()
+    l = Link()
+    self.links = l.find_by_pubitem(self)
 
-"""
-  def find_by_tag(self, category, name):
+  def set_tags(self):
+    cur = self.get_dbi().conn.cursor()
+    t = Tag()
+    self.tags = t.find_by_pubitem(self)
+
+  def set_comments(self):
+    cur = self.get_dbi().conn.cursor()
+    c = Comment()
+    self.comments = c.find_by_pubitem(self)
+
+  def find_by_tag_category_and_name(self, tag_category, tag_name):
     rv = [];
     sql = "SELECT DISTINCT p.id, p.nickname, p.pub_type, p.title, p.authors, \
             p.journal, p.publisher, p.volume, p.page, p.pub_year, p.created_at\
             FROM pubitems AS p, tags_pubitems AS tp, tags AS t \
             WHERE p.id=tp.pubitem_id AND tp.tag_id=t.id \
-              AND t.category='%s' AND t.name='%s' ORDER BY p.pub_year DESC" \
-              % (tag_category, tag_name)
+              AND t.category=? AND t.name=? ORDER BY p.pub_year DESC" 
 
-    for row in self.conn.execute(sql):
+    cur = self.get_dbi().conn.cursor()
+    for row in cur.execute(sql, (tag_category, tag_name)):
       pubitem = PubItem(id=row[0], nickname=row[1], pub_type=row[2], \
                   title=row[3], authors=row[4], journal=row[5], \
                   publisher=row[6], volume=row[7], page=row[8], \
                   pub_year=row[9], created_at=row[10])
+      pubitem.set_links()
+      pubitem.set_tags()
+      pubitem.set_comments()
       rv.append(pubitem)
 
     return rv
 
-  def get_pubitem_by_nickname(self, nickname):
+  def find_by_nickname(self, nickname):
     sql = "SELECT DISTINCT p.id, p.nickname, p.pub_type, p.title, p.authors,\
             p.journal, p.publisher, p.volume, p.page, p.pub_year, p.created_at\
-            FROM pubitems AS p WHERE p.nickname='%s'" % (nickname)
+            FROM pubitems AS p WHERE p.nickname='%s'" % nickname
 
-    for row in self.conn.execute(sql):
+    cur = self.get_dbi().conn.cursor()
+    for row in cur.execute(sql):
+    #for row in cur.execute(sql, (nickname)):
       pubitem = PubItem(id=row[0], nickname=row[1], pub_type=row[2], \
                   title=row[3], authors=row[4], journal=row[5], \
                   publisher=row[6], volume=row[7], page=row[8], \
                   pub_year=row[9], created_at=row[10])
-      pubitem.set_links( self.get_links_by_pubitem(pubitem) )
-      pubitem.set_tags( self.get_tags_by_pubitem(pubitem) )
-      pubitem.set_comments( self.get_comments_by_pubitem(pubitem) )
+      pubitem.set_links()
+      pubitem.set_tags()
+      pubitem.set_comments()
       return pubitem
 
-  def get_pubitems_by_tag_category(self, tag_category):
+  def find_by_tag_category(self, tag_category):
     rv = [];
     sql = "SELECT DISTINCT p.id, p.nickname, p.pub_type, p.title, p.authors,\
             p.journal, p.publisher, p.volume, p.page, p.pub_year, p.created_at\
             FROM pubitems AS p, tags_pubitems AS tp, tags AS t\
             WHERE p.id=tp.pubitem_id AND tp.tag_id=t.id\
               AND t.category='%s' ORDER BY p.pub_year DESC" % tag_category
-    for row in self.conn.execute(sql):
+
+    cur = self.get_dbi().conn.cursor()
+    for row in cur.execute(sql):
       pubitem = PubItem(id=row[0], nickname=row[1], pub_type=row[2],
                   title=row[3], authors=row[4], journal=row[5],
                   publisher=row[6], volume=row[7], page=row[8],
                   pub_year=row[9], created_at=row[10])
+      pubitem.set_links()
+      pubitem.set_tags()
+      pubitem.set_comments()
       rv.append(pubitem)
+
     return rv
-"""

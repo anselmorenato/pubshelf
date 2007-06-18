@@ -3,16 +3,12 @@
 import wx, yaml
 import sys
 sys.path.append('./libpy/')
-from dbi import PubShelfDBI
-from conf import PubShelfConf
 sys.path.append('./gui/')
 from frame import PubShelfFrame
 
 class PubShelfGUI(wx.App):
   def OnInit(self):
-    conf = PubShelfConf()
-    dbi = PubShelfDBI()
-    frame = PubShelfFrame(None, -1, 'PubShelf', dbi, conf)
+    frame = PubShelfFrame(None, -1, 'PubShelf')
     frame.Show(True)
     self.SetTopWindow(frame)
     return True

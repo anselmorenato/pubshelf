@@ -30,9 +30,8 @@ AVAILABLE_SITES = ['pubmed','google scholar']
 PUBMED_RETMAX = '50'
 
 class PubShelfSearchDialog(wx.Dialog):
-  def __init__(self, parent, id, conf):
+  def __init__(self, parent, id):
     wx.Dialog.__init__(self, parent, id, 'Search', size=searchDialogSize)
-    self.conf = conf
 
     panel = wx.Panel(self, -1)
 
@@ -100,7 +99,7 @@ class PubShelfSearchDialog(wx.Dialog):
     
   def LaunchPubItemDialog(self, event):
     idx = event.GetIndex()
-    dialog = PubShelfPubItemDialog(None, -1, self.conf)
+    dialog = PubShelfPubItemDialog(None, -1)
     dialog.SetPubItem(self.pubitem_list[idx])
     dialog.ShowModal()
     dialog.Destroy()

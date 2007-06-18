@@ -4,15 +4,25 @@ import sys
 sys.path.append('../libpy/')
 from model_pubitem import PubItem
 from model_tag import Tag
+from model_link import Link
+from model_comment import Comment
 
 data1 = yaml.load( file('./pubitem_example1.yaml','r') )
 pm1 = PubItem(title=data1['title'], authors=data1['authors'],
               journal=data1['journal'], volume=data1['volume'],
               page=data1['page'], pub_year=data1['pub_year'],
               pub_type=data1['pub_type'])
+
 for tag_raw in data1['tags']:
   (tag_category, tag_name) = tag_raw.split('::')
   pm1.tags.append( Tag(category=tag_category, name=tag_name) )
+
+for link_raw in data1['links']:
+  pm1.links.append( Link(uri=link_raw) )
+
+for comment_raw in data1['comments']:
+  pm1.comments.append( Comment(title=comment_raw['title'], 
+                               textbody=comment_raw['textbody']) )
 
 pm1.insert()
 print pm1.nickname
