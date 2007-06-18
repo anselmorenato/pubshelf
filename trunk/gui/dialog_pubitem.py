@@ -1,7 +1,6 @@
 import wx, wx.html
 import sys, os
-sys.path.append('../libpy/')
-from data import *
+from conf import PubShelfConf
 
 ID_SUBMIT_BUTTON = 2000
 ID_CLOSE_BUTTON = 2001
@@ -31,10 +30,11 @@ pubItemSubmitButtonPos = (190,550)
 pubItemCloseButtonPos = (310,550)
 
 class PubShelfPubItemDialog(wx.Dialog):
-  def __init__(self, parent, id, conf):
+  def __init__(self, parent, id):
     wx.Dialog.__init__(self, parent, id, 'PubItem', size=pubItemDialogSize)
 
-    self.conf = conf
+    psconf = PubShelfConf()
+    self.conf = psconf.item
     self.tag_list = []
     self.uri_list = []
 

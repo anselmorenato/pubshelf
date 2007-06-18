@@ -1,13 +1,14 @@
 import wx
 import wx.html
-import os
-import re
+import os, re
+from conf import PubShelfConf
 
 class PubShelfItemContent(wx.html.HtmlWindow):
-  def __init__(self, parent, id, conf):
+  def __init__(self, parent, id):
     window_style = wx.html.HW_SCROLLBAR_AUTO
     super(PubShelfItemContent, self).__init__(parent, id, style=window_style)
-    self.conf = conf
+    psconf = PubShelfConf()
+    self.conf = psconf.item
     if 'gtk2' in wx.PlatformInfo:
       self.SetStandardFonts()
 
@@ -19,7 +20,7 @@ class PubShelfItemContent(wx.html.HtmlWindow):
     rv += "<TR><TD BGCOLOR='blue'><font color='white'><b>Links</b></font>"
     rv += "</TD></TR><TR><TD><UL>"
     for link in pubitem.links:
-      rv += "<LI><A HREF='%s'>%s</A>" % (link.uri, link.name)
+      rv += "<LI><A HREF='%s'>%s</A>" % (link.uri, link.uri)
     rv += "</UL></TD></TR>"
 
     rv += "<TR><TD BGCOLOR='blue'><FONT color='white'><b>Tags</b></FONT>"

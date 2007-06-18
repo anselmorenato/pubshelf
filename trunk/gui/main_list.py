@@ -1,16 +1,15 @@
 import wx
 from dialog_pubitem import PubShelfPubItemDialog
+from model_pubitem import PubItem
 
 WIDTH_NICKNAME = 130
 WIDTH_YEAR = 70
 WIDTH_TITLE = 200
 
 class PubShelfItemList(wx.ListCtrl):
-  def __init__(self, parent, id, dbi, conf):
+  def __init__(self, parent, id):
     window_style = wx.LC_REPORT
     super(PubShelfItemList, self).__init__(parent, id, style=window_style)
-    self.dbi = dbi
-    self.conf = conf
     
     self.InsertColumn(0, 'NickName', width=WIDTH_NICKNAME)
     self.InsertColumn(1, 'Year', width=WIDTH_YEAR)
@@ -28,15 +27,17 @@ class PubShelfItemList(wx.ListCtrl):
 
   def OnListItemSelected(self, event):
     nickname = event.GetItem().GetText()
-    pubitem = self.dbi.get_pubitem_by_nickname( nickname )
+    pi = PubItem()
+    pubitem = pi.find_by_nickname(nickname)
     item_content = self.GetParent().GetParent().GetParent().itemContent
     item_content.set_pubitem( pubitem )
     event.Skip()
 
   def OnPubItemActivated(self, event):
     nickname = event.GetItem().GetText()
-    pubitem = self.dbi.get_pubitem_by_nickname( nickname )
-    dialog = PubShelfPubItemDialog(None, -1, self.conf)
+    pi = PubItem()
+    pubitem = pi.find_by_nickname(nickname)
+    dialog = PubShelfPubItemDialog(None, -1)
     dialog.SetPubItem(pubitem)
     dialog.ShowModal()
     dialog.Destroy()

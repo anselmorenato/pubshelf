@@ -13,10 +13,8 @@ itemListHeight = 300
 minItemPaneHeight = 100
 
 class PubShelfFrame(wx.Frame):
-  def __init__(self, parent, id, title, dbi, conf):
+  def __init__(self, parent, id, title):
     wx.Frame.__init__(self, parent, id, title, wx.DefaultPosition, windowSize)
-    self.dbi = dbi
-    self.conf = conf
 
     ## MenuBar
     self.SetMenuBar( PubShelfMenuBar() )
@@ -45,13 +43,13 @@ class PubShelfFrame(wx.Frame):
     self.itemSplitter.SetMinimumPaneSize(minItemPaneHeight)
 
     ## TagTree
-    self.tree = PubShelfTagTree(self.treeSplitter, -1, self.dbi, self.conf)
+    self.tree = PubShelfTagTree(self.treeSplitter, -1)
 
     ## ItemList
-    self.itemList = PubShelfItemList(self.itemSplitter, -1, self.dbi, self.conf)
+    self.itemList = PubShelfItemList(self.itemSplitter, -1)
 
     ## ItemContent
-    self.itemContent = PubShelfItemContent(self.itemSplitter, -1, self.conf)
+    self.itemContent = PubShelfItemContent(self.itemSplitter, -1)
     
     ## Wrap Up
     self.itemSplitter.SplitHorizontally(self.itemList, self.itemContent,
@@ -60,11 +58,11 @@ class PubShelfFrame(wx.Frame):
                                       treePaneWidth)
 
   def PubItemDialog(self, event):
-    self.new_dialog = PubShelfPubItemDialog(None, -1, self.conf)
+    self.new_dialog = PubShelfPubItemDialog(None, -1)
     self.new_dialog.ShowModal()
     self.new_dialog.Destroy()
   
   def SearchDialog(self, event):
-    self.search_dialog = PubShelfSearchDialog(None, -1, self.conf)
+    self.search_dialog = PubShelfSearchDialog(None, -1)
     self.search_dialog.ShowModal()
     self.search_dialog.Destroy()
