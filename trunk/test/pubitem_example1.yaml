@@ -11,6 +11,6 @@ comments:
 links:
   - http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&Cmd=ShowDetailView&TermToSearch=17502601
 tags:
-  - Author::AlbertLaszloBarabasi
-  - Author::MarcVidal
-  - Topic::Network
+  - 'Author::AlbertLaszloBarabasi'
+  - 'Author::MarcVidal'
+  - 'Topic::Network'

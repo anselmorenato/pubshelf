@@ -12,7 +12,8 @@ class PubShelfTagTree(wx.TreeCtrl):
 
     root = self.AddRoot('Root')
     category = dict()
-    for tag in Tag.get_tags():
+    t = Tag()
+    for tag in t.get_tags():
       if(not category.has_key(tag.category)):
         category[tag.category] = self.AppendItem(root, tag.category)
       self.AppendItem(category[tag.category], tag.name)
