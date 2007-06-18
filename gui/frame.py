@@ -33,7 +33,7 @@ class PubShelfFrame(wx.Frame):
     toolbar.Realize()
     self.Bind(wx.EVT_TOOL, self.PubItemDialog, id=1)
     self.Bind(wx.EVT_TOOL, self.SearchDialog, id=2)
- 
+
     ## Splitter 
     self.treeSplitter = wx.SplitterWindow(self, -1, 
                                           style=wx.SP_BORDER)
@@ -57,12 +57,17 @@ class PubShelfFrame(wx.Frame):
     self.treeSplitter.SplitVertically(self.tree, self.itemSplitter, 
                                       treePaneWidth)
 
+  def Refresh(self):
+    self.tree.Refresh()
+    self.itemList.Refresh()
+    self.itemContent.Refresh()
+
   def PubItemDialog(self, event):
-    self.new_dialog = PubShelfPubItemDialog(None, -1)
+    self.new_dialog = PubShelfPubItemDialog(self, -1)
     self.new_dialog.ShowModal()
     self.new_dialog.Destroy()
   
   def SearchDialog(self, event):
-    self.search_dialog = PubShelfSearchDialog(None, -1)
+    self.search_dialog = PubShelfSearchDialog(self, -1)
     self.search_dialog.ShowModal()
     self.search_dialog.Destroy()

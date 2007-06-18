@@ -1,6 +1,8 @@
+#home_path: /home/linusben/Desktop/
 home_path: /home/linusben/Desktop/
-dbpath: db.test/
-dbname: pubshelf.db
+db_path: db.test/pubshelf.db
+file_path: /home/linusben/pubshelf/db.test/
+dbname: Local
 apps:
   pdf: /usr/bin/acroread
   html: /usr/bin/firefox

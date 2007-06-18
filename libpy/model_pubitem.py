@@ -46,7 +46,7 @@ class PubItem(PubShelfModel):
     first_author = self.authors.split(',')[0]
     first_author_surname  = re.sub(r'[A-Z\-]+$','',first_author)
     first_author_surname  = re.sub(r'\s+','',first_author_surname)
-    return "%s%d" % (first_author_surname,self.pub_year)
+    return "%s%d" % (first_author_surname, self.pub_year)
 
   def set_nickname(self):
     cur = self.get_dbi().conn.cursor()
@@ -68,18 +68,16 @@ class PubItem(PubShelfModel):
       pubitem_id = cur.lastrowid
 
       for link in self.links:
-        cur.execute("INSERT INTO links (pubitem_id, uri) VALUES (?,?)",
-              (pubitem_id, link.uri))
+        link.pubitem_id = pubitem_id
+        link.insert(cur, self)
+
       for comment in self.comments:
-        cur.execute("INSERT INTO comments (pubitem_id, title, textbody) \
-                      VALUES (?,?,?)", 
-                      (pubitem_id, comment.title, comment.textbody))
-      t = Tag()
+        comment.pubitem_id = pubitem_id
+        comment.insert(cur)
+      
       for tag in self.tags:
-        tag_id = t.find_by_name_and_category(cur, tag.name, tag.category)
-        cur.execute("INSERT INTO tags_pubitems \
-                      (pubitem_id, tag_id) VALUES (?,?)", 
-                      (pubitem_id, tag_id))
+        tag.insert_with_pubitem_id(cur, pubitem_id)
+
       self.get_dbi().conn.commit()
     except:
       print "Error in insert PubItem"

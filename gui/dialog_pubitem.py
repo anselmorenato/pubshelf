@@ -1,14 +1,19 @@
 import wx, wx.html
 import sys, os
 from conf import PubShelfConf
+from model_pubitem import PubItem
+from model_tag import Tag
+from model_link import Link
 
 ID_SUBMIT_BUTTON = 2000
 ID_CLOSE_BUTTON = 2001
 ID_FILE_SELECT_BUTTON = 2010
 ID_URI_ADD_BUTTON = 2011
 ID_URI_DELETE_BUTTON = 2012
+ID_URI_FORM = 2013
 ID_TAG_ADD_BUTTON  = 2020
 ID_TAG_DELETE_BUTTON  = 2021
+ID_TAG_FORM = 2022
 AVAILABLE_PUB_TYPES = ['paper','book']
 
 pubItemDialogSize = (600,600)
@@ -85,12 +90,15 @@ class PubShelfPubItemDialog(wx.Dialog):
     ## Tag
     wx.StaticText(panel, -1, 'Tags', size=pubItemLabelSize, 
                   pos = (pubItemLabelXPos, pubItemYPos))
-    self.tag_form = wx.TextCtrl(panel, -1, '', size=pubItemMediumFormSize,
-                      pos=(pubItemFormXPos, pubItemYPos))
+    self.tag_form = wx.TextCtrl(panel, ID_TAG_FORM, '', 
+                      size=pubItemMediumFormSize,
+                      pos=(pubItemFormXPos, pubItemYPos), 
+                      style=wx.TE_LEFT|wx.TE_PROCESS_ENTER)
     wx.Button(panel, ID_TAG_ADD_BUTTON, 'Add', 
                   style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
                   pos=(pubItemButton1XPos, pubItemYPos))
     self.Bind(wx.EVT_BUTTON, self.AddTag, id=ID_TAG_ADD_BUTTON)
+    self.Bind(wx.EVT_TEXT_ENTER, self.AddTag, id=ID_TAG_FORM)
 
     ## Tag List
     pubItemYPos += pubItemYPosStep
@@ -107,8 +115,10 @@ class PubShelfPubItemDialog(wx.Dialog):
     pubItemYPos += pubItemYPosStep
     wx.StaticText(panel, -1, 'URIs', size=pubItemLabelSize, 
                   pos = (pubItemLabelXPos, pubItemYPos))
-    self.uri_form = wx.TextCtrl(panel, -1, '', size=pubItemMediumFormSize,
-                  pos=(pubItemFormXPos, pubItemYPos))
+    self.uri_form = wx.TextCtrl(panel, ID_URI_FORM, '', 
+                  size=pubItemMediumFormSize,
+                  pos=(pubItemFormXPos, pubItemYPos),
+                  style=wx.TE_LEFT|wx.TE_PROCESS_ENTER )
     wx.Button(panel, ID_FILE_SELECT_BUTTON, 'File', 
                   style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
                   pos=(pubItemButton1XPos, pubItemYPos))
@@ -117,6 +127,7 @@ class PubShelfPubItemDialog(wx.Dialog):
                   style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
                   pos=(pubItemButton2XPos, pubItemYPos))
     self.Bind(wx.EVT_BUTTON, self.AddURI, id=ID_URI_ADD_BUTTON)
+    self.Bind(wx.EVT_TEXT_ENTER, self.AddURI, id=ID_URI_FORM)
     
     ## URI List
     pubItemYPos += pubItemYPosStep
@@ -136,6 +147,7 @@ class PubShelfPubItemDialog(wx.Dialog):
     close_button = wx.Button(panel, ID_CLOSE_BUTTON, 'Close', 
                           style=wx.BU_EXACTFIT,
                           size=pubItemButtonSize, pos=pubItemCloseButtonPos)
+    self.Bind(wx.EVT_BUTTON, self.OnSubmit, id=ID_SUBMIT_BUTTON)
     self.Bind(wx.EVT_BUTTON, self.OnClose, id=ID_CLOSE_BUTTON)
     
     self.Centre()
@@ -150,20 +162,50 @@ class PubShelfPubItemDialog(wx.Dialog):
     self.forms['Volume'].SetValue( pubitem.volume )
     self.forms['Page'].SetValue( pubitem.page )
     self.forms['Pub Year'].SetValue( "%d" % pubitem.pub_year )
+
     for tag in pubitem.tags:
       self.tag_list.append("%s::%s" % (tag.category, tag.name))
+
     for link in pubitem.links:
-      self.uri_list.append("%s" % link.uri)
+      self.uri_list.append("%s::%s" % (link.name, link.uri))
     
     self.RefreshList(self.tag_list, self.tag_list_form)
     self.RefreshList(self.uri_list, self.uri_list_form)
 
   def OnClose(self, event):
     self.Close()
+
+  def OnSubmit(self, event):
+    pubitem = PubItem()
+    pubitem.id = self.forms['ID'].GetLabel()
+    pubitem.nickname = self.forms['Nickname'].GetLabel()
+    pubitem.pub_type = self.forms['Pub type'].GetValue()
+    pubitem.title = self.forms['Title'].GetValue()
+    pubitem.authors = self.forms['Authors'].GetValue()
+    pubitem.journal = self.forms['Journal'].GetValue()
+    pubitem.publisher = self.forms['Publisher'].GetValue()
+    pubitem.volume = self.forms['Volume'].GetValue()
+    pubitem.page = self.forms['Page'].GetValue()
+    pubitem.pub_year = self.forms['Pub Year'].GetValue()
+    if(pubitem.pub_year): pubitem.pub_year = int(pubitem.pub_year)
+
+    for tag_raw in self.tag_list:
+      (category, name) = tag_raw.split('::')
+      pubitem.tags.append( Tag(category=category,name=name) )
+
+    for link_raw in self.uri_list:
+      (name, uri) = link_raw.split('::')
+      pubitem.links.append( Link(name=name, uri=uri) )
+
+    if( pubitem.title ):
+      pubitem.insert()
+      self.GetParent().Refresh()
+    self.Close()
  
   def AddTag(self, event):
     if(self.tag_list.count(self.tag_form.GetValue()) == 0):
       self.tag_list.append(self.tag_form.GetValue())
+    self.tag_form.SetValue('')
     self.RefreshList(self.tag_list, self.tag_list_form)
   
   def DeleteTag(self, event):
@@ -174,6 +216,7 @@ class PubShelfPubItemDialog(wx.Dialog):
   def AddURI(self, event):
     if(self.uri_list.count(self.uri_form.GetValue()) == 0):
       self.uri_list.append(self.uri_form.GetValue())
+    self.uri_form.SetValue('')
     self.RefreshList(self.uri_list, self.uri_list_form)
 
   def DeleteURI(self, event):
@@ -213,4 +256,3 @@ class PubShelfPubItemDialog(wx.Dialog):
       self.uri_form.SetValue(file_path)
 
     file_dialog.Destroy()
-    

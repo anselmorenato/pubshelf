@@ -5,8 +5,8 @@ from conf import PubShelfConf
 class PubShelfDBI:
   def __init__(self):
     conf = PubShelfConf()
-    db_file1 = '../'+conf.item['dbpath']+conf.item['dbname'];
-    db_file2 = './'+conf.item['dbpath']+conf.item['dbname'];
+    db_file1 = '../'+conf.item['db_path']
+    db_file2 = './'+conf.item['db_path']
     
     db_file = ''
     if( os.access(db_file1, os.F_OK) ): db_file = db_file1

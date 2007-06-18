@@ -85,7 +85,7 @@ class PubmedFetchHandler(xml.sax.ContentHandler):
     pubmed_link_uri = 'http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&Cmd=ShowDetailView&TermToSearch=%s'
     if( self.element_array == self.pubmed_id_tag ):
       pubmed_uri = pubmed_link_uri % content
-      self.article.links.append( Link(uri=pubmed_uri) )
+      self.article.links.append( Link(name='PubMed', uri=pubmed_uri) )
     elif( self.element_array == self.journal_title_tag ):
       self.article.journal = content
     elif( self.element_array == self.article_title_tag ):
