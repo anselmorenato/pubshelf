@@ -23,8 +23,11 @@ class PubItem:
     self.links = []
     
   def get_dbi(self):
-    if(! self.dbi): self.dbi = PubShelfDBI()
-    return self.dbi
+    try:
+      return self.dbi
+    except:
+      self.dbi = PubShelfDBI()
+      return self.dbi
 
   def set_tags(self,tags):
     self.tags = tags
@@ -74,9 +77,15 @@ class PubItem:
               (self.nickname, self.pub_type, self.title,
               self.authors, self.journal, self.publisher,
               self.volume, self.page, self.pub_year))
+      pubitem_id = cur.lastrowid
+      for tag in self.tags:
+        cur.execute("INSERT INTO tags (category, name) VALUES (?,?)",
+              (tag.category, tag.name))
       self.get_dbi().conn.commit()
     except:
       print "Error in insert PubItem"
+
+      
     #for link in self.links:
     #  self.dbi.conn.execute('INSERT INTO links (pubitem_id, uri) VALUES (?,?)',
     #          (self_id, link.uri))

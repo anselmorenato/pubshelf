@@ -9,9 +9,11 @@ class Tag:
     self.articles = []
  
   def get_dbi(self):
-    #if(self.dbi): return self.dbi
-    self.dbi = PubShelfDBI()
-    return self.dbi
+    try:
+      return self.dbi
+    except:
+      self.dbi = PubShelfDBI()
+      return self.dbi
 
   def get_tags(self):
     rv = []
