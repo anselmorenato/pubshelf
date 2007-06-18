@@ -18,7 +18,8 @@ for tag_raw in data1['tags']:
   pm1.tags.append( Tag(category=tag_category, name=tag_name) )
 
 for link_raw in data1['links']:
-  pm1.links.append( Link(uri=link_raw) )
+  (link_name, link_uri) = link_raw.split('::')
+  pm1.links.append( Link(name=link_name, uri=link_uri) )
 
 for comment_raw in data1['comments']:
   pm1.comments.append( Comment(title=comment_raw['title'], 

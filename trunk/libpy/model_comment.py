@@ -8,6 +8,10 @@ class Comment(PubShelfModel):
     self.textbody = textbody
     self.created_at = created_at
 
+  def insert(self, cursor):
+    sql = "INSERT INTO comments (pubitem_id,title,textbody) VALUES (?,?,?)"
+    cursor.execute(sql, (self.pubitem_id, self.title, self.textbody))
+
   def find_by_pubitem(self, pubitem):
     rv = []
     cur = self.get_dbi().conn.cursor()

@@ -19,6 +19,9 @@ class PubShelfItemList(wx.ListCtrl):
     self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnListItemSelected)
     self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnPubItemActivated)
 
+  def Refresh(self):
+    pass
+
   def OnItemListSizeChanged(self, event):
     if( self.GetSize().x > 0 ):
       WIDTH_TITLE = self.GetSize().x - WIDTH_NICKNAME - WIDTH_YEAR
