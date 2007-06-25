@@ -50,9 +50,9 @@ class PubItem(PubShelfModel):
 
   def set_nickname(self):
     cur = self.get_dbi().conn.cursor()
-    sql = "SELECT count(id) FROM pubitems WHERE nickname like '"
-    sql += self.get_nickname_base()+"%'"
-    cur.execute(sql)
+    sql = "SELECT count(id) FROM pubitems WHERE nickname LIKE '%s'"
+    nickname_base = self.get_nickname_base() + '%'
+    cur.execute(sql % nickname_base)
     self.nickname = "%s.%d" % (self.get_nickname_base(), cur.fetchone()[0]+1)
 
   def insert(self):

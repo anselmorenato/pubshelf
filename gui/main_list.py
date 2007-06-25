@@ -4,7 +4,7 @@ from model_pubitem import PubItem
 
 WIDTH_NICKNAME = 130
 WIDTH_YEAR = 70
-WIDTH_TITLE = 200
+WIDTH_TITLE = 400
 
 class PubShelfItemList(wx.ListCtrl):
   def __init__(self, parent, id):
@@ -22,12 +22,10 @@ class PubShelfItemList(wx.ListCtrl):
   def Refresh(self):
     pass
 
-  #def OnItemListSizeChanged(self, event):
   def OnResize(self):
     if( self.GetSize().x > 0 ):
       WIDTH_TITLE = self.GetSize().x - WIDTH_NICKNAME - WIDTH_YEAR
       self.SetColumnWidth(2, width=WIDTH_TITLE)
-  #  event.Skip()
 
   def OnListItemSelected(self, event):
     nickname = event.GetItem().GetText()

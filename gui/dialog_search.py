@@ -3,6 +3,7 @@ from string import atoi
 import sys
 sys.path.append('../libpy/')
 from pubmed import *
+from google import *
 from dialog_pubitem import PubShelfPubItemDialog
 
 ID_SEARCH_BUTTON = 3000
@@ -26,8 +27,8 @@ searchResultPubYearWidth = 50
 searchCloseButtonSize = (100,30)
 searchCloseButtonPos = (250,550)
 
-#AVAILABLE_SITES = ['pubmed','google scholar']
-AVAILABLE_SITES = ['pubmed']
+AVAILABLE_SITES = ['pubmed','google scholar']
+#AVAILABLE_SITES = ['pubmed']
 PUBMED_RETMAX = '50'
 
 class PubShelfSearchDialog(wx.Dialog):
@@ -86,6 +87,8 @@ class PubShelfSearchDialog(wx.Dialog):
 
     if( self.site.GetValue() == AVAILABLE_SITES[0] ):
       articles = pubmed_search(self.search_form.GetValue(), PUBMED_RETMAX)
+    elif( self.site.GetValue() == AVAILABLE_SITES[1] ):
+      articles = google_search(self.search_form.GetValue(), PUBMED_RETMAX)
    
     log_text += ": %d records are found" % len(articles)
     if( len(articles) == atoi(PUBMED_RETMAX) ):

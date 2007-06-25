@@ -23,10 +23,9 @@ class PubShelfFrame(wx.Frame):
     self.statusbar = self.CreateStatusBar();
 
     ## ToolBar
-    toolbar = self.CreateToolBar(wx.TB_TEXT);
-    toolbar.SetToolBitmapSize((20,20))
-    tool_image_new = wx.Bitmap("./icon/new.png", wx.BITMAP_TYPE_PNG)
-    tool_image_search = wx.Bitmap("./icon/search.png", wx.BITMAP_TYPE_PNG)
+    toolbar = self.CreateToolBar();
+    tool_image_new = wx.Bitmap("./icon/new.bmp", wx.BITMAP_TYPE_BMP)
+    tool_image_search = wx.Bitmap("./icon/search.bmp", wx.BITMAP_TYPE_BMP)
     toolbar.AddSimpleTool(1, tool_image_new, "New")
     toolbar.AddSimpleTool(2, tool_image_search, "Search")
     toolbar.AddSeparator()

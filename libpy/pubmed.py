@@ -111,6 +111,7 @@ def pubmed_search(term='', retmax=50):
   url_eutil = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils'
   url_search = url_eutil+'/esearch.fcgi?db=pubmed&usehistory=y'
   url_search += '&retmax='+retmax
+  term = term.replace(' ','+')
   url_search += '&term='+term
 
   response = urllib.urlopen(url_search).read()

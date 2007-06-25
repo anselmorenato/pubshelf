@@ -14,19 +14,18 @@ class Link(PubShelfModel):
     sql = "INSERT INTO links (pubitem_id, name, uri) VALUES (?,?,?)"
     conf = PubShelfConf()
     nickname = pubitem.nickname
-    if( self.uri.startswith('file') ):
+    if( self.uri.startswith('/') ):
       target_suffix = re.search(r'\.([a-z]+)$', self.uri).group(1)
-      target_dir1 = conf.item['file_path']
 
+      target_dir1 = conf.item['dir_home']+conf.item['dir_db']
       target_dir2 = "%s%s/" % (target_dir1,str(pubitem.pub_year))
-      if not os.path.isdir(target_dir2): os.mkdir(target_dir2)
+      if( not os.path.isdir(target_dir2) ): os.mkdir(target_dir2)
 
       target_filename = "%s_%s.%s" % (nickname, self.name, target_suffix)
       target_uri = "%s%s" % (target_dir2, target_filename)
       
-      self.uri = self.uri.replace('file://','')
       shutil.copyfile(self.uri, target_uri)
-      self.uri = 'file://'+target_uri
+      self.uri = target_uri
 
     cursor.execute(sql, (self.pubitem_id, self.name, self.uri))
 

@@ -14,103 +14,117 @@ ID_URI_FORM = 2013
 ID_TAG_ADD_BUTTON  = 2020
 ID_TAG_DELETE_BUTTON  = 2021
 ID_TAG_FORM = 2022
+
+DIALOG_SIZE = wx.Size(600,600)
 AVAILABLE_PUB_TYPES = ['paper','book']
-
-pubItemDialogSize = (600,600)
-pubItemLabelSize = (90,25)
-pubItemLargeFormSize = (490,25)
-pubItemSmallFormSize = (200,25)
-pubItemMediumFormSize = (350,25)
-pubItemListSize = (420,75)
-pubItemLabelXPos = 10
-pubItemFormXPos  = 100
-pubItemButton1XPos = 460
-pubItemButton2XPos = 530
-pubItemYPosInit = 10
-pubItemYPosStep = 30
-
-pubItemButtonSize = (100,25)
-pubItemSmallButtonSize = (60,25)
-pubItemSubmitButtonPos = (190,550)
-pubItemCloseButtonPos = (310,550)
 
 class PubShelfPubItemDialog(wx.Dialog):
   def __init__(self, parent, id):
-    wx.Dialog.__init__(self, parent, id, 'PubItem', size=pubItemDialogSize)
+    wx.Dialog.__init__(self, parent, id, 'PubItem', size=DIALOG_SIZE)
+    panel = wx.Panel(self, -1)
 
     psconf = PubShelfConf()
     self.conf = psconf.item
     self.tag_list = []
     self.uri_list = []
-
-    panel = wx.Panel(self, -1)
-
-    ## Basic elements
     self.forms = dict()
 
-    labels = ['ID','Nickname','Pub type','Title','Authors','Journal',
-              'Publisher','Volume','Page','Pub Year']
-    form_size = { 'ID':pubItemSmallFormSize, 
-                  'Nickname':pubItemSmallFormSize,
-                  'Pub type':pubItemSmallFormSize,
-                  'Title':pubItemLargeFormSize,
-                  'Authors':pubItemLargeFormSize,
-                  'Journal':pubItemLargeFormSize,
-                  'Publisher':pubItemLargeFormSize,
-                  'Volume':pubItemSmallFormSize,
-                  'Page':pubItemSmallFormSize,
-                  'Pub Year':pubItemSmallFormSize
-                  }
-    form_type = { 'ID':'StaticText', 'Nickname':'StaticText', 
-                  'Pub type':'ComboBox', 'Title':'TextCtrl',
-                  'Authors':'TextCtrl', 'Journal':'TextCtrl',
-                  'Publisher':'TextCtrl', 'Volume':'TextCtrl',
-                  'Page':'TextCtrl', 'Pub Year':'TextCtrl'
-                  }
+    mainSizer = wx.BoxSizer(wx.VERTICAL)
 
-    pubItemYPos = pubItemYPosInit
-    for label in labels:
-      wx.StaticText(panel, -1, label, size=pubItemLabelSize, 
-                      pos = (pubItemLabelXPos, pubItemYPos))
-      if(label == 'Pub type'):
-        self.forms[label] = wx.ComboBox(panel, -1, choices=AVAILABLE_PUB_TYPES,
-                              size=form_size[label], style=wx.CB_READONLY,
-                              pos=(pubItemFormXPos, pubItemYPos))
-        self.forms[label].SetValue(AVAILABLE_PUB_TYPES[0])
-      elif(form_type[label] == 'StaticText'):
-        self.forms[label] = wx.StaticText(panel, -1, '', 
-                              size=form_size[label],
-                              pos = (pubItemFormXPos, pubItemYPos))
-      elif(form_type[label] == 'TextCtrl'):
-        self.forms[label] = wx.TextCtrl(panel, -1, '', 
-                              size=form_size[label],
-                              pos=(pubItemFormXPos, pubItemYPos))
-      pubItemYPos += pubItemYPosStep
+    ## ID, Nickname, PubType
+    IDLabel = wx.StaticText(panel, -1, 'ID', style=wx.ALIGN_RIGHT)
+    self.forms['ID'] = wx.StaticText(panel, -1, '', style=wx.ALIGN_CENTER)
+    nicknameLabel = wx.StaticText(panel, -1,'Nickname', style=wx.ALIGN_RIGHT)
+    self.forms['Nickname'] = wx.StaticText(panel,-1,'', style=wx.ALIGN_CENTER)
+    pubtypeLabel = wx.StaticText(panel,-1,'Pub. type', style=wx.ALIGN_RIGHT)
+    self.forms['PubType'] = wx.ComboBox(panel,-1,choices=AVAILABLE_PUB_TYPES)
+    self.forms['PubType'].SetValue(AVAILABLE_PUB_TYPES[0])
+    
+    headSizer = wx.BoxSizer(wx.HORIZONTAL)
+    headSizer.Add(IDLabel, wx.SHAPED, 10)
+    headSizer.Add(self.forms['ID'], wx.SHAPED)
+    headSizer.Add(nicknameLabel, wx.SHAPED, 10)
+    headSizer.Add(self.forms['Nickname'], wx.SHAPED)
+    headSizer.Add(pubtypeLabel, wx.SHAPED, 10)
+    headSizer.Add(self.forms['PubType'], wx.SHAPED, 10)
+    mainSizer.Add(headSizer, 0, wx.EXPAND|wx.ALL, 10)
 
-    ## Tag
-    wx.StaticText(panel, -1, 'Tags', size=pubItemLabelSize, 
-                  pos = (pubItemLabelXPos, pubItemYPos))
-    self.tag_form = wx.TextCtrl(panel, ID_TAG_FORM, '', 
-                      size=pubItemMediumFormSize,
-                      pos=(pubItemFormXPos, pubItemYPos), 
-                      style=wx.TE_LEFT|wx.TE_PROCESS_ENTER)
-    wx.Button(panel, ID_TAG_ADD_BUTTON, 'Add', 
-                  style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
-                  pos=(pubItemButton1XPos, pubItemYPos))
-    self.Bind(wx.EVT_BUTTON, self.AddTag, id=ID_TAG_ADD_BUTTON)
-    self.Bind(wx.EVT_TEXT_ENTER, self.AddTag, id=ID_TAG_FORM)
+    ## Title, Authors, Journal, Publisher
+    titleLabel = wx.StaticText(panel, -1, 'Title', style=wx.ALIGN_CENTER)
+    self.forms['Title'] = wx.TextCtrl(panel, -1, '')
+    authorsLabel = wx.StaticText(panel, -1, 'Authors', style=wx.ALIGN_CENTER)
+    self.forms['Authors'] = wx.TextCtrl(panel, -1, '')
+    journalLabel = wx.StaticText(panel, -1, 'Journal', style=wx.ALIGN_CENTER)
+    self.forms['Journal'] = wx.TextCtrl(panel, -1, '')
+    publisherLabel= wx.StaticText(panel, -1, 'Publisher', style=wx.ALIGN_CENTER)
+    self.forms['Publisher'] = wx.TextCtrl(panel, -1, '')
+    
+    titleSizer = wx.FlexGridSizer(cols=2, hgap=10)
+    titleSizer.AddGrowableCol(1)
+    titleSizer.Add(titleLabel, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
+    titleSizer.Add(self.forms['Title'], 0, wx.EXPAND)
+    titleSizer.Add(authorsLabel, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
+    titleSizer.Add(self.forms['Authors'], 0, wx.EXPAND)
+    titleSizer.Add(journalLabel, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
+    titleSizer.Add(self.forms['Journal'], 0, wx.EXPAND)
+    titleSizer.Add(publisherLabel, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
+    titleSizer.Add(self.forms['Publisher'], 0, wx.EXPAND)
+    mainSizer.Add(titleSizer,0, wx.EXPAND|wx.ALL, 10)
 
-    ## Tag List
-    pubItemYPos += pubItemYPosStep
-    self.tag_list_form = wx.ListCtrl(panel, -1,
-                            style=wx.LC_LIST, size=pubItemListSize,
-                            pos=(pubItemFormXPos, pubItemYPos))
-    wx.Button(panel, ID_TAG_DELETE_BUTTON, 'Delete', 
-                          style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
-                          pos=(pubItemButton2XPos, pubItemYPos))
-    self.Bind(wx.EVT_BUTTON, self.DeleteTag, id=ID_TAG_DELETE_BUTTON)
-    pubItemYPos += pubItemYPosStep*2
+    ## Volume, Page, PubYear
+    volumeLabel = wx.StaticText(panel, -1, 'Volume', style=wx.ALIGN_CENTER)
+    self.forms['Volume'] = wx.TextCtrl(panel, -1, '')
+    pageLabel = wx.StaticText(panel, -1,'Page', style=wx.ALIGN_CENTER)
+    self.forms['Page'] = wx.TextCtrl(panel,-1,'')
+    pubyearLabel = wx.StaticText(panel,-1,'Pub. year', style=wx.ALIGN_CENTER)
+    self.forms['PubYear'] = wx.TextCtrl(panel,-1,'')
+    
+    volumeSizer = wx.BoxSizer(wx.HORIZONTAL)
+    volumeSizer.Add(volumeLabel, wx.SHAPED)
+    volumeSizer.Add(self.forms['Volume'], wx.SHAPED)
+    volumeSizer.Add(pageLabel, wx.SHAPED)
+    volumeSizer.Add(self.forms['Page'], wx.SHAPED)
+    volumeSizer.Add(pubyearLabel, wx.SHAPED)
+    volumeSizer.Add(self.forms['PubYear'], wx.SHAPED)
+    mainSizer.Add(volumeSizer, 0, wx.EXPAND|wx.ALL, 10)
 
+    tagLabel = wx.StaticText(panel, -1, 'Tags', style=wx.ALIGN_CENTER)
+    self.forms['Tag'] = wx.TextCtrl(panel, ID_TAG_FORM, '', 
+                                  style=wx.TE_LEFT|wx.TE_PROCESS_ENTER)
+    tagAddButton = wx.Button(panel, ID_TAG_ADD_BUTTON, 'Add')
+    #self.Bind(wx.EVT_BUTTON, self.AddTag, id=ID_TAG_ADD_BUTTON)
+    #self.Bind(wx.EVT_TEXT_ENTER, self.AddTag, id=ID_TAG_FORM)
+    self.forms['TagList'] = wx.ListCtrl(panel, -1, style=wx.LC_LIST)
+    tagDeleteButton = wx.Button(panel, ID_TAG_DELETE_BUTTON, 'Delete')
+    #self.Bind(wx.EVT_BUTTON, self.DeleteTag, id=ID_TAG_DETELE_BUTTON)
+
+    listSizer = wx.FlexGridSizer(cols=3, hgap=10, vgap=10)
+    listSizer.AddGrowableCol(1)
+    listSizer.Add(tagLabel, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
+    listSizer.Add(self.forms['Tag'], 0, wx.EXPAND)
+    listSizer.Add(tagAddButton, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
+    listSizer.Add((10,10))
+    listSizer.Add(self.forms['TagList'], 0, wx.EXPAND)
+    listSizer.Add(tagDeleteButton, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
+    mainSizer.Add(listSizer, 0, wx.EXPAND|wx.ALL, 10)
+
+    ## Buttons
+    submit_button = wx.Button(panel, ID_SUBMIT_BUTTON, 'Submit')
+    close_button = wx.Button(panel, ID_CLOSE_BUTTON, 'Close')
+    self.Bind(wx.EVT_BUTTON, self.OnSubmit, id=ID_SUBMIT_BUTTON)
+    self.Bind(wx.EVT_BUTTON, self.OnClose, id=ID_CLOSE_BUTTON)
+    
+    buttonSizer = wx.BoxSizer(wx.HORIZONTAL)
+    buttonSizer.Add((10,10))
+    buttonSizer.Add(submit_button)
+    buttonSizer.Add(closeButton)
+    buttonSizer.Add((10,10))
+    mainSizer.Add(buttonSizer, 0, wx.EXPAND|wx.ALL, 10)
+    
+    panel.SetSizer(mainSizer)
+    self.Centre()
+
+'''
     ## URI
     pubItemYPos += pubItemYPosStep
     wx.StaticText(panel, -1, 'URIs', size=pubItemLabelSize, 
@@ -139,19 +153,7 @@ class PubShelfPubItemDialog(wx.Dialog):
                    pos=(pubItemButton2XPos, pubItemYPos))
     self.Bind(wx.EVT_BUTTON, self.DeleteURI, id=ID_URI_DELETE_BUTTON)
     pubItemYPos += pubItemYPosStep*2
-    
-    ## Buttons
-    submit_button = wx.Button(panel, ID_SUBMIT_BUTTON, 'Submit', 
-                          style=wx.BU_EXACTFIT,
-                          size=pubItemButtonSize, pos=pubItemSubmitButtonPos)
-    close_button = wx.Button(panel, ID_CLOSE_BUTTON, 'Close', 
-                          style=wx.BU_EXACTFIT,
-                          size=pubItemButtonSize, pos=pubItemCloseButtonPos)
-    self.Bind(wx.EVT_BUTTON, self.OnSubmit, id=ID_SUBMIT_BUTTON)
-    self.Bind(wx.EVT_BUTTON, self.OnClose, id=ID_CLOSE_BUTTON)
-    
-    self.Centre()
-
+''' 
   def SetPubItem(self, pubitem):
     self.forms['ID'].SetLabel( "%d" % pubitem.id )
     self.forms['Nickname'].SetLabel( pubitem.nickname )
