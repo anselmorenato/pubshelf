@@ -1,7 +1,7 @@
 #home_path: /home/linusben/Desktop/
-home_path: /home/linusben/Desktop/
-db_path: db.test/pubshelf.db
-file_path: /home/linusben/pubshelf/db.test/
+home_path: /home/linusben/pubshelf.bak/batch/data/
+db_path: db/pubshelf.db
+file_path: /home/linusben/pubshelf/db/
 dbname: Local
 apps:
   pdf: /usr/bin/acroread

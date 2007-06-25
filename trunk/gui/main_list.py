@@ -15,18 +15,19 @@ class PubShelfItemList(wx.ListCtrl):
     self.InsertColumn(1, 'Year', width=WIDTH_YEAR)
     self.InsertColumn(2, 'Title', width=WIDTH_TITLE)
 
-    self.Bind(wx.EVT_SIZE, self.OnItemListSizeChanged)
+    #self.Bind(wx.EVT_SIZE, self.OnItemListSizeChanged)
     self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnListItemSelected)
     self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnPubItemActivated)
 
   def Refresh(self):
     pass
 
-  def OnItemListSizeChanged(self, event):
+  #def OnItemListSizeChanged(self, event):
+  def OnResize(self):
     if( self.GetSize().x > 0 ):
       WIDTH_TITLE = self.GetSize().x - WIDTH_NICKNAME - WIDTH_YEAR
       self.SetColumnWidth(2, width=WIDTH_TITLE)
-    event.Skip()
+  #  event.Skip()
 
   def OnListItemSelected(self, event):
     nickname = event.GetItem().GetText()
