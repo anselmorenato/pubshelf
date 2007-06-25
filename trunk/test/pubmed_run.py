@@ -3,7 +3,7 @@ import sys
 sys.path.append('../libpy/')
 from pubmed import *
 
-term = 'synmuv'
+term = 'ahringer AND 2007[dp]'
 retmax = '50'
 
 articles = pubmed_search(term, retmax)

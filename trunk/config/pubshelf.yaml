@@ -1,8 +1,11 @@
-#home_path: /home/linusben/Desktop/
-home_path: /home/linusben/pubshelf.bak/batch/data/
-db_path: db/pubshelf.db
-file_path: /home/linusben/pubshelf/db/
-dbname: Local
+dir_home: /Users/Ram/tk320/pubshelf/
+dir_db: db.test/
+db_name: pubshelf.db
 apps:
-  pdf: /usr/bin/acroread
-  html: /usr/bin/firefox
+  ## Linux
+  #pdf: /usr/bin/acroread
+  #html: /usr/bin/firefox
+
+  ## Mac OSX
+  pdf: open -a Preview
+  html: open -a Firefox

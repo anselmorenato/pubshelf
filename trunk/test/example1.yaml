@@ -6,14 +6,15 @@ pub_year: 2007
 volume: 17
 page: 667-668
 comments: 
-  - title: Abstract
-    author: None
-    textbody: 
+  - title: Brief description
+    author: Taejoon Kwon
+    textbody: General perspective and introduction for human ENCODE project.
 links:
   - title: PubMed
     uri: http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&Cmd=ShowDetailView&TermToSearch=17567987
   - title: FullText
-  - uri: /home/linusben/pubshelf/test/example1.pdf
+    #uri: /home/linusben/pubshelf/test/example1.pdf
+    uri: /Users/Ram/tk320/pubshelf/test/example1.pdf
 tags:
   - 'Author/George Weinstock'
   - 'Topic/ENCODE'
