@@ -56,6 +56,7 @@ class PubShelfFrame(wx.Frame):
                                       itemListHeight)
     self.treeSplitter.SplitVertically(self.tree, self.itemSplitter, 
                                       treePaneWidth)
+    self.Bind(wx.EVT_SIZE, self.OnResize)
 
   def Refresh(self):
     self.tree.Refresh()
@@ -71,3 +72,8 @@ class PubShelfFrame(wx.Frame):
     self.search_dialog = PubShelfSearchDialog(self, -1)
     self.search_dialog.ShowModal()
     self.search_dialog.Destroy()
+  
+  def OnResize(self, event):
+    self.itemList.OnResize()
+    event.Skip()
+
