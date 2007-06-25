@@ -14,11 +14,11 @@ pm1 = PubItem(title=data1['title'], authors=data1['authors'],
               pub_type=data1['pub_type'])
 
 for tag_raw in data1['tags']:
-  (tag_category, tag_name) = tag_raw.split('::')
+  (tag_category, tag_name) = tag_raw.split('/')
   pm1.tags.append( Tag(category=tag_category, name=tag_name) )
 
 for link_raw in data1['links']:
-  (link_name, link_uri) = link_raw.split('::')
+  (link_name, link_uri) = link_raw.split('/')
   pm1.links.append( Link(name=link_name, uri=link_uri) )
 
 for comment_raw in data1['comments']:

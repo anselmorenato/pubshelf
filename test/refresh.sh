@@ -1,4 +1,7 @@
 #!/bin/bash
-rm ../db.test/pubshelf.db
-sqlite3 ../db.test/pubshelf.db < ../conf/schema.sqlite3.sql
+TESTDB="../db.test/pubshelf.db"
+if [ -e  $TESTDB ]; then
+  rm $TESTDB
+fi
+sqlite3 $TESTDB < ../config/schema.sqlite3.sql
 #rm -rf ../db.test/????
