@@ -4,17 +4,13 @@
   * tortoisesvn ( http://tortoisesvn.net/downloads ) -- ver. 1.4.4
   * sqlite3 ( http://www.sqlite.org/download.html ) -- ver. 3.4.0
   * python ( http://www.python.org/download/ ) -- ver. 2.5.1 (*2.5 이상*)
+  * wxpython ( http://www.wxpython.org/download.php ) -- ver. 2.8.4 unicode 버전
+  * PyYAML ( http://pyyaml.org/wiki/PyYAML ) -- ver.3.0.5
 
-= 소스 받아오기 =
- svn checkout http://pubshelf.googlecode.com/svn/trunk/ pubshelf
+= 소스 받아오기 using TortoiseSVN (탐색기에서 마우스 오른쪽 버튼으로 Checkout) =
+  * URL of repository - http://pubshelf.googlecode.com/svn/trunk/
+  * Checkout directory - C:\pubshelf
 
-= PyYAML ==
-  * ttp://pyyaml.org/wiki/PyYAML -- ver. 3.0.5
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-
+= 설치 =
+  * sqlite3.exe 실행 파일을 c:\pubshelf 로 옮김
+  * cmd 창 띄워서 sqlite3 db/pubshelf.db < config\schema.sqlite3.sql 실행
