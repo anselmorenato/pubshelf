@@ -19,8 +19,10 @@ class PubShelfItemList(wx.ListCtrl):
     self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnListItemSelected)
     self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnPubItemActivated)
 
-  def Refresh(self):
-    pass
+  def SetItemList(self, pubitems):
+    self.DeleteAllItems()
+    for pubitem in pubitems:
+      self.Append([pubitem.nickname, pubitem.pub_year, pubitem.title])
 
   def OnResize(self):
     if( self.GetSize().x > 0 ):
@@ -32,7 +34,7 @@ class PubShelfItemList(wx.ListCtrl):
     pi = PubItem()
     pubitem = pi.find_by_nickname(nickname)
     item_content = self.GetParent().GetParent().GetParent().itemContent
-    item_content.set_pubitem( pubitem )
+    item_content.SetPubItem( pubitem )
     event.Skip()
 
   def OnPubItemActivated(self, event):

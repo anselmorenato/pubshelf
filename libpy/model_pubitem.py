@@ -98,8 +98,25 @@ class PubItem(PubShelfModel):
     c = Comment()
     self.comments = c.find_by_pubitem(self)
 
+  def find_all(self):
+    rv = []
+    sql = "SELECT id,nickname,pub_type,title,authors,journal,publisher,\
+            volume,page,pub_year,created_at FROM pubitems"
+    cur = self.get_dbi().conn.cursor()
+    for row in cur.execute(sql):
+      pubitem = PubItem(id=row[0], nickname=row[1], pub_type=row[2], \
+                  title=row[3], authors=row[4], journal=row[5], \
+                  publisher=row[6], volume=row[7], page=row[8], \
+                  pub_year=row[9], created_at=row[10])
+      pubitem.set_links()
+      pubitem.set_tags()
+      pubitem.set_comments()
+      rv.append(pubitem)
+    return rv
+
+
   def find_by_tag_category_and_name(self, tag_category, tag_name):
-    rv = [];
+    rv = []
     sql = "SELECT DISTINCT p.id, p.nickname, p.pub_type, p.title, p.authors, \
             p.journal, p.publisher, p.volume, p.page, p.pub_year, p.created_at\
             FROM pubitems AS p, tags_pubitems AS tp, tags AS t \
@@ -116,7 +133,6 @@ class PubItem(PubShelfModel):
       pubitem.set_tags()
       pubitem.set_comments()
       rv.append(pubitem)
-
     return rv
 
   def find_by_nickname(self, nickname):

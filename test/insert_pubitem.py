@@ -23,6 +23,7 @@ for link_raw in data1['links']:
 
 for comment_raw in data1['comments']:
   pm1.comments.append( Comment(title=comment_raw['title'], 
+                               author=comment_raw['author'],
                                textbody=comment_raw['textbody']) )
 
 pm1.insert()
