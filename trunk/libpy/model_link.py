@@ -10,7 +10,11 @@ class Link(PubShelfModel):
     self.uri = uri
     self.created_at = created_at
 
-  def insert(self, cursor, pubitem):
+  def delete_with_cursor_and_pubitem(self, cursor, pubitem):
+    sql = "DELETE FROM links WHERE pubitem_id=?"
+    cursor.execute(sql, pubitem.id)
+    
+  def insert_with_cursor_and_pubitem(self, cursor, pubitem):
     sql = "INSERT INTO links (pubitem_id, name, uri) VALUES (?,?,?)"
     conf = PubShelfConf()
     nickname = pubitem.nickname
@@ -24,8 +28,9 @@ class Link(PubShelfModel):
       target_filename = "%s_%s.%s" % (nickname, self.name, target_suffix)
       target_uri = "%s%s" % (target_dir2, target_filename)
       
-      shutil.copyfile(self.uri, target_uri)
-      self.uri = target_uri
+      if( self.uri != target_uri ):
+        shutil.copyfile(self.uri, target_uri)
+        self.uri = target_uri
 
     cursor.execute(sql, (self.pubitem_id, self.name, self.uri))
 

@@ -36,6 +36,14 @@ class PubItem(PubShelfModel):
     rv += self.get_volume_page() + " (%d)" % self.pub_year
     return rv
 
+  def get_export_citation(self):
+    ## bibtex
+    bibtex_authors = self.authors.replace('; ',' and ')
+    bibtex_page = self.page.replace('-','--')
+    bibtex = "@article{%s,\n  title={{%s}},\n  author={%s},\n  journal={%s},\n  volume={%s},\n  pages={%s},\n  year={%d}\n}\n\n" 
+    return bibtex % (self.nickname, self.title, bibtex_authors, self.journal, 
+                    self.volume, bibtex_page, self.pub_year)
+
   def get_volume_page(self):
     rv = ''
     if( self.volume ): rv += ", %s" % self.volume
@@ -55,6 +63,43 @@ class PubItem(PubShelfModel):
     cur.execute(sql % nickname_base)
     self.nickname = "%s.%d" % (self.get_nickname_base(), cur.fetchone()[0]+1)
 
+  def update(self):
+    if( self.nickname == '' ): self.set_nickname()
+    try:
+      cursor = self.get_dbi().conn.cursor()
+      cursor.execute("UPDATE pubitems SET pub_type=?, title=?, authors=?,\
+                      journal=?,publisher=?,volume=?,page=?,pub_year=?\
+                      WHERE id=?", 
+                      (self.pub_type, self.title, self.authors, self.journal, 
+                       self. publisher, self.volume, self.page, self.pub_year,
+                       self.id))
+      
+      l = Link()
+      l.delete_with_cursor_and_pubitem(cursor, self)
+      if( len(self.links) ):
+        for link in self.links:
+          link.pubitem_id = self.id
+          link.insert_with_cursor_and_pubitem(cursor, self)
+        
+      c = Comment()
+      c.delete_with_cursor_and_pubitem(cursor, self)
+      if( len(self.comments) ):
+        for comment in self.comments:
+          comment.pubitem_id = self.id
+          comment.insert_with_cursor(cursor)
+      
+      t = Tag()
+      t.delete_with_cursor_and_pubitem(cursor, self)
+      if( len(self.tags) ):
+        for tag in self.tags:
+          tag.insert_with_cursor_and_pubitem(cursor, self)
+
+      self.get_dbi().conn.commit()
+                  
+    except:
+      print "Error in update PubItem"
+      raise
+
   def insert(self):
     if( self.nickname == '' ): self.set_nickname()
     try:
@@ -65,18 +110,18 @@ class PubItem(PubShelfModel):
               (self.nickname, self.pub_type, self.title,
               self.authors, self.journal, self.publisher,
               self.volume, self.page, self.pub_year))
-      pubitem_id = cur.lastrowid
+      self.pubitem_id = cur.lastrowid
 
       for link in self.links:
-        link.pubitem_id = pubitem_id
-        link.insert(cur, self)
+        link.pubitem_id = self.pubitem_id
+        link.insert_with_cursor_and_pubitem(cur, self)
 
       for comment in self.comments:
-        comment.pubitem_id = pubitem_id
-        comment.insert(cur)
+        comment.pubitem_id = self.pubitem_id
+        comment.insert_with_cursor(cur)
       
       for tag in self.tags:
-        tag.insert_with_pubitem_id(cur, pubitem_id)
+        tag.insert_with_cursor_and_pubitem(cur, self)
 
       self.get_dbi().conn.commit()
     except:
@@ -98,6 +143,27 @@ class PubItem(PubShelfModel):
     c = Comment()
     self.comments = c.find_by_pubitem(self)
 
+  def find(self):
+    sql = "SELECT id,nickname,pub_type,title,authors,journal,publisher,\
+            volume,page,pub_year,created_at FROM pubitems WHERE id=?"
+    cursor = self.get_dbi().conn.cursor()
+    for row in cur.execute(sql, self.id):
+      self.id = row[0]
+      self.nickname = row[1]
+      self.pub_type = row[2]
+      self.title = row[3]
+      self.authors = row[4]
+      self.journal = row[5]
+      self.pulisher = row[6]
+      self.volume = row[7]
+      self.page = row[8]
+      self.pub_year = row[9]
+      self.created_at = row[10]
+      self.set_links()
+      self.set_tags()
+      self.set_comments()
+    return self
+      
   def find_all(self):
     rv = []
     sql = "SELECT id,nickname,pub_type,title,authors,journal,publisher,\
@@ -153,7 +219,7 @@ class PubItem(PubShelfModel):
       return pubitem
 
   def find_by_tag_category(self, tag_category):
-    rv = [];
+    rv = []
     sql = "SELECT DISTINCT p.id, p.nickname, p.pub_type, p.title, p.authors,\
             p.journal, p.publisher, p.volume, p.page, p.pub_year, p.created_at\
             FROM pubitems AS p, tags_pubitems AS tp, tags AS t\

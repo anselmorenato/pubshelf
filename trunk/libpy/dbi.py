@@ -1,5 +1,6 @@
 import os
-from pysqlite2 import dbapi2 as sqlite
+import sqlite3
+#from pysqlite2 import dbapi2 as sqlite
 from conf import PubShelfConf
 
 class PubShelfDBI:
@@ -8,6 +9,7 @@ class PubShelfDBI:
     db_file = conf.item['dir_home']+conf.item['dir_db']+conf.item['db_name']
 
     try:
-      self.conn = sqlite.connect(db_file);
+      #self.conn = sqlite.connect(db_file)
+      self.conn = sqlite3.connect(db_file)
     except:
       print "Database error : check %s" % db_file

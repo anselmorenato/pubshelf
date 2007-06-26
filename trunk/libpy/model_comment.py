@@ -10,15 +10,31 @@ class Comment(PubShelfModel):
     self.textbody = textbody
     self.created_at = created_at
 
-  def insert(self, cursor):
+  def delete_with_cursor_and_pubitem(self, cursor, pubitem):
+    sql = "DELETE FROM comments WHERE pubitem_id=?"
+    cursor.execute(sql, pubitem.id)
+
+  def insert_with_cursor(self, cursor):
     sql = "INSERT INTO comments (pubitem_id,title,author,textbody) \
             VALUES (?,?,?,?)"
     cursor.execute(sql, (self.pubitem_id,self.title,self.author,self.textbody))
+  
+  def insert(self):
+    cursor = self.get_dbi().conn.cursor()
+    self.insert_with_cursor(cursor)
+    self.get_dbi().conn.commit()
+
+  def update(self):
+    cursor = self.get_dbi().conn.cursor()
+    sql = "UPDATE comments SET title=?,author=?,textbody=? WHERE id=?"
+    cursor.execute(sql, (self.title, self.author, self.textbody, self.id))
+    self.get_dbi().conn.commit()
 
   def delete(self):
     sql = "DELETE FROM comments WHERE id=?"
     cursor = self.get_dbi().conn.cursor()
     cursor.execute(sql, self.id)
+    self.get_dbi().conn.commit()
 
   def find_by_pubitem(self, pubitem):
     rv = []

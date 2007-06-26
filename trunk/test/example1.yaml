@@ -13,8 +13,8 @@ links:
   - title: PubMed
     uri: http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&Cmd=ShowDetailView&TermToSearch=17567987
   - title: FullText
-    uri: /home/linusben/pubshelf/test/example1.pdf
-    #uri: /Users/Ram/tk320/pubshelf/test/example1.pdf
+    #uri: /home/linusben/pubshelf/test/example1.pdf
+    uri: /Users/Ram/tk320/pubshelf/test/example1.pdf
 tags:
   - 'Author/George Weinstock'
   - 'Topic/ENCODE'
