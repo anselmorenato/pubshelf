@@ -24,6 +24,7 @@ CREATE TABLE comments (
   id          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   pubitem_id  INTEGER NOT NULL,
   title       TEXT NOT NULL DEFAULT '',
+  author      TEXT NOT NULL DEFAULT 'Anonymous',
   textbody    TEXT NOT NULL DEFAULT '',
   created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
 );

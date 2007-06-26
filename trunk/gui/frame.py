@@ -17,7 +17,7 @@ class PubShelfFrame(wx.Frame):
     wx.Frame.__init__(self, parent, id, title, wx.DefaultPosition, windowSize)
 
     ## MenuBar
-    self.SetMenuBar( PubShelfMenuBar() )
+    #self.SetMenuBar( PubShelfMenuBar() )
     
     ## StatusBar
     self.statusbar = self.CreateStatusBar();

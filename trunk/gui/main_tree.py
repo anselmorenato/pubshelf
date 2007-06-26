@@ -13,6 +13,9 @@ class PubShelfTagTree(wx.TreeCtrl):
   def Refresh(self):
     self.DeleteAllItems()
     root = self.AddRoot('Root')
+    self.AppendItem(root,'All')
+    self.AppendItem(root,'No Category')
+    
     category = dict()
     t = Tag()
     for tag in t.find_all():
@@ -29,12 +32,14 @@ class PubShelfTagTree(wx.TreeCtrl):
     pi = PubItem()
     pubitems = []
     if( tag_category == 'Root' ):
-      pubitems = pi.find_by_tag_category(tag_name)
+      if( tag_name == 'All' ):
+        pubitems = pi.find_all()
+      elif( tag_name == 'No Category' ):
+        pubitems = pi.find_by_tag_category('')
+      else:
+        pubitems = pi.find_by_tag_category(tag_name)
     else:
       pubitems = pi.find_by_tag_category_and_name(tag_category, tag_name)
 
     item_list = self.GetParent().GetParent().itemList
-    item_list.DeleteAllItems()
-    for pubitem in pubitems:
-      entry = [pubitem.nickname, pubitem.pub_year, pubitem.title]
-      item_list.Append(entry)
+    item_list.SetItemList(pubitems)

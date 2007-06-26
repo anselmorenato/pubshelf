@@ -1,7 +1,10 @@
 import wx
 import wx.html
 import os, re
+from string import atoi
 from conf import PubShelfConf
+from model_comment import Comment
+from dialog_comment import PubShelfCommentDialog
 
 LabelSize = (100,15)
 
@@ -15,15 +18,18 @@ class PubShelfItemContent(wx.html.HtmlWindow):
     if 'gtk2' in wx.PlatformInfo:
       self.SetStandardFonts()
 
-  def set_pubitem(self, pubitem):
+  def SetPubItem(self, pubitem):
+    self.pubitem = pubitem
     rv = "<TABLE><TR><TD BGCOLOR='blue'>"
     rv += "<FONT COLOR='white'><B>Citation</B></FONT></TD></TR>"
     rv += "<TR><TD>"+pubitem.get_html_citation()+"</TD></TR>"
 
     rv += "<TR><TD BGCOLOR='blue'><FONT color='white'><b>Tags</b></FONT>"
-    rv += "</TD></TR><TR><TD>"
+    rv += "</TD></TR><TR><TD BGCOLOR=#ccccff>"
+    tags = []
     for tag in pubitem.tags:
-      rv += "%s/%s," % (tag.category, tag.name)
+      tags.append( tag.category+'/'+tag.name )
+    rv += ', '.join(tags) 
     rv += "</TD></TR>"
 
     rv += "<TR><TD BGCOLOR='blue'><font color='white'><b>Links</b></font>"
@@ -32,19 +38,34 @@ class PubShelfItemContent(wx.html.HtmlWindow):
       rv += "<LI><A HREF='%s'>%s</A>" % (link.uri, link.name)
     rv += "</UL></TD></TR>"
     
+    rv += "<TR><TD BGCOLOR='blue'><font color='white'>"
+    rv += "<b>Comments</b></font></TD></TR>"
+    rv += "<TR><TD BGCOLOR='#ccccff' ALIGN=RIGHT><font color='blue'>"
+    rv += "<A HREF='AddComment'>Add Comment</A></font></TD></TR>"
+    for comment in pubitem.comments:
+      rv += "<TR><TD><b>%s</b> by <i>%s</i> (%s)</TD></TR>" \
+              % (comment.title, comment.author, comment.created_at)
+      rv += "<TR><TD>%s</TD></TR>" % comment.textbody
+      rv += "<TR><TD BGCOLOR='#ccccff' ALIGN=RIGHT><font color='blue'>"
+      rv += "<A HREF='EditComment/%d'>Edit</A></font/></TD></TR> " % comment.id
     rv += "</TABLE>"
     self.SetPage(rv)
 
-  #def RefreshListCtrl(self, list, list_form):
-  #  list_form.DeleteAllItems()
-  #  idx = 0
-  #  for item in list:
-  #    list_form.InsertStringItem(idx, item)
-  #    idx += 1
-
   def OnLinkClicked(self, link):
     uri = link.GetHref()
-    if( uri.startswith('/') ):
+    if( uri == 'AddComment' ):
+      dialogComment = PubShelfCommentDialog(None,-1,self.pubitem)
+      dialogComment.ShowModal()
+      dialogComment.Destroy()
+    elif( uri.startswith('EditComment') ):
+      comment_id = atoi(uri.replace('EditComment/',''))
+      c = Comment(id=comment_id)
+      comment = c.find( )[0]
+      dialogComment = PubShelfCommentDialog(None,-1,self.pubitem)
+      dialogComment.SetComment(comment)
+      dialogComment.ShowModal()
+      dialogComment.Destroy()
+    elif( uri.startswith('/') ):
       if( uri.endswith('pdf') ):
         os.system(self.conf['apps']['pdf']+' '+uri)
       else:

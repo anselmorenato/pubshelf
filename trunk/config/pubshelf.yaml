@@ -1,11 +1,13 @@
-dir_home: /Users/Ram/tk320/pubshelf/
+#dir_home: /Users/Ram/tk320/pubshelf/
+dir_file: /home/linusben/Desktop/
+dir_home: /home/linusben/pubshelf/
 dir_db: db.test/
 db_name: pubshelf.db
 apps:
   ## Linux
-  #pdf: /usr/bin/acroread
-  #html: /usr/bin/firefox
+  pdf: /usr/bin/acroread
+  html: /usr/bin/firefox
 
   ## Mac OSX
-  pdf: open -a Preview
-  html: open -a Firefox
+  #pdf: open -a Preview
+  #html: open -a Firefox

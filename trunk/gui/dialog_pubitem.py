@@ -8,14 +8,17 @@ from model_link import Link
 ID_SUBMIT_BUTTON = 2000
 ID_CLOSE_BUTTON = 2001
 ID_FILE_SELECT_BUTTON = 2010
-ID_URI_ADD_BUTTON = 2011
-ID_URI_DELETE_BUTTON = 2012
-ID_URI_FORM = 2013
+ID_LINK_ADD_BUTTON = 2011
+ID_LINK_DELETE_BUTTON = 2012
+ID_LINK_TITLE_FORM = 2013
+ID_LINK_URI_FORM = 2014
 ID_TAG_ADD_BUTTON  = 2020
 ID_TAG_DELETE_BUTTON  = 2021
 ID_TAG_FORM = 2022
 
 DIALOG_SIZE = wx.Size(600,600)
+linkTitleWidth = 130
+linkURIWidth = 310
 AVAILABLE_PUB_TYPES = ['paper','book']
 
 class PubShelfPubItemDialog(wx.Dialog):
@@ -26,7 +29,7 @@ class PubShelfPubItemDialog(wx.Dialog):
     psconf = PubShelfConf()
     self.conf = psconf.item
     self.tag_list = []
-    self.uri_list = []
+    self.link_list = dict()
     self.forms = dict()
 
     mainSizer = wx.BoxSizer(wx.VERTICAL)
@@ -88,72 +91,85 @@ class PubShelfPubItemDialog(wx.Dialog):
     volumeSizer.Add(self.forms['PubYear'], wx.SHAPED)
     mainSizer.Add(volumeSizer, 0, wx.EXPAND|wx.ALL, 10)
 
+    ## Tags
     tagLabel = wx.StaticText(panel, -1, 'Tags', style=wx.ALIGN_CENTER)
     self.forms['Tag'] = wx.TextCtrl(panel, ID_TAG_FORM, '', 
                                   style=wx.TE_LEFT|wx.TE_PROCESS_ENTER)
     tagAddButton = wx.Button(panel, ID_TAG_ADD_BUTTON, 'Add')
-    #self.Bind(wx.EVT_BUTTON, self.AddTag, id=ID_TAG_ADD_BUTTON)
-    #self.Bind(wx.EVT_TEXT_ENTER, self.AddTag, id=ID_TAG_FORM)
     self.forms['TagList'] = wx.ListCtrl(panel, -1, style=wx.LC_LIST)
     tagDeleteButton = wx.Button(panel, ID_TAG_DELETE_BUTTON, 'Delete')
-    #self.Bind(wx.EVT_BUTTON, self.DeleteTag, id=ID_TAG_DETELE_BUTTON)
 
-    listSizer = wx.FlexGridSizer(cols=3, hgap=10, vgap=10)
-    listSizer.AddGrowableCol(1)
-    listSizer.Add(tagLabel, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
-    listSizer.Add(self.forms['Tag'], 0, wx.EXPAND)
-    listSizer.Add(tagAddButton, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
-    listSizer.Add((10,10))
-    listSizer.Add(self.forms['TagList'], 0, wx.EXPAND)
-    listSizer.Add(tagDeleteButton, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
-    mainSizer.Add(listSizer, 0, wx.EXPAND|wx.ALL, 10)
+    self.Bind(wx.EVT_BUTTON, self.AddTag, id=ID_TAG_ADD_BUTTON)
+    self.Bind(wx.EVT_TEXT_ENTER, self.AddTag, id=ID_TAG_FORM)
+    self.Bind(wx.EVT_BUTTON, self.DeleteTag, id=ID_TAG_DELETE_BUTTON)
+
+    tagButtonSizer = wx.BoxSizer(wx.VERTICAL)
+    tagButtonSizer.Add(tagAddButton, wx.EXPAND)
+    tagButtonSizer.Add(tagDeleteButton, wx.EXPAND)
+
+    tagSizer = wx.FlexGridSizer(cols=3, hgap=10, vgap=10)
+    tagSizer.AddGrowableCol(1)
+    tagSizer.Add(tagLabel, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
+    tagSizer.Add(self.forms['Tag'], 0, wx.EXPAND)
+    tagSizer.Add((10,10))
+    tagSizer.Add((10,10))
+    tagSizer.Add(self.forms['TagList'], 0, wx.EXPAND)
+    tagSizer.Add(tagButtonSizer, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
+    mainSizer.Add(tagSizer, 0, wx.EXPAND|wx.ALL, 10)
+
+    ## Links
+    linkLabel = wx.StaticText(panel, -1, 'Links', style=wx.ALIGN_CENTER)
+    self.forms['LinkTitle'] = wx.TextCtrl(panel, ID_LINK_TITLE_FORM, '',
+                                size=(linkTitleWidth,-1),style=wx.TE_LEFT)
+    self.forms['LinkURI'] = wx.TextCtrl(panel, ID_LINK_URI_FORM, '', 
+                                size=(linkURIWidth,-1),
+                                style=wx.TE_LEFT|wx.TE_PROCESS_ENTER)
+    fileBrowseButton = wx.Button(panel, ID_FILE_SELECT_BUTTON, 'File')
+    linkAddButton = wx.Button(panel, ID_LINK_ADD_BUTTON, 'Add')
+    self.forms['LinkList'] = wx.ListCtrl(panel, -1, style=wx.LC_REPORT)
+    self.forms['LinkList'].InsertColumn(0,'Title', width=linkTitleWidth)
+    self.forms['LinkList'].InsertColumn(1,'URI', width=linkURIWidth)
+    linkDeleteButton = wx.Button(panel, ID_LINK_DELETE_BUTTON, 'Delete')
+
+    self.Bind(wx.EVT_BUTTON, self.OpenFile, id=ID_FILE_SELECT_BUTTON)
+    self.Bind(wx.EVT_BUTTON, self.AddLink, id=ID_LINK_ADD_BUTTON)
+    self.Bind(wx.EVT_TEXT_ENTER, self.AddLink, id=ID_LINK_URI_FORM)
+    self.Bind(wx.EVT_BUTTON, self.DeleteLink, id=ID_LINK_DELETE_BUTTON)
+
+    linkButtonSizer = wx.BoxSizer(wx.VERTICAL)
+    linkButtonSizer.Add(linkAddButton, wx.EXPAND)
+    linkButtonSizer.Add(linkDeleteButton, wx.EXPAND)
+
+    linkFormSizer = wx.BoxSizer(wx.HORIZONTAL)
+    linkFormSizer.Add(self.forms['LinkTitle'])
+    linkFormSizer.Add(self.forms['LinkURI'])
+
+    linkSizer = wx.FlexGridSizer(cols=3, hgap=10, vgap=10)
+    linkSizer.AddGrowableCol(1)
+    linkSizer.Add(linkLabel, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
+    linkSizer.Add(linkFormSizer, 0, wx.EXPAND)
+    linkSizer.Add(fileBrowseButton, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
+    linkSizer.Add((10,10))
+    linkSizer.Add(self.forms['LinkList'], 0, wx.EXPAND)
+    linkSizer.Add(linkButtonSizer, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL)
+    mainSizer.Add(linkSizer, 0, wx.EXPAND|wx.ALL, 10)
 
     ## Buttons
-    submit_button = wx.Button(panel, ID_SUBMIT_BUTTON, 'Submit')
-    close_button = wx.Button(panel, ID_CLOSE_BUTTON, 'Close')
+    submitButton = wx.Button(panel, ID_SUBMIT_BUTTON, 'Submit')
+    closeButton = wx.Button(panel, ID_CLOSE_BUTTON, 'Close')
     self.Bind(wx.EVT_BUTTON, self.OnSubmit, id=ID_SUBMIT_BUTTON)
     self.Bind(wx.EVT_BUTTON, self.OnClose, id=ID_CLOSE_BUTTON)
     
     buttonSizer = wx.BoxSizer(wx.HORIZONTAL)
-    buttonSizer.Add((10,10))
-    buttonSizer.Add(submit_button)
-    buttonSizer.Add(closeButton)
-    buttonSizer.Add((10,10))
+    buttonSizer.Add((10,10), wx.EXPAND)
+    buttonSizer.Add(submitButton, wx.EXPAND)
+    buttonSizer.Add(closeButton, wx.EXPAND)
+    buttonSizer.Add((10,10), wx.EXPAND)
     mainSizer.Add(buttonSizer, 0, wx.EXPAND|wx.ALL, 10)
     
     panel.SetSizer(mainSizer)
     self.Centre()
 
-'''
-    ## URI
-    pubItemYPos += pubItemYPosStep
-    wx.StaticText(panel, -1, 'URIs', size=pubItemLabelSize, 
-                  pos = (pubItemLabelXPos, pubItemYPos))
-    self.uri_form = wx.TextCtrl(panel, ID_URI_FORM, '', 
-                  size=pubItemMediumFormSize,
-                  pos=(pubItemFormXPos, pubItemYPos),
-                  style=wx.TE_LEFT|wx.TE_PROCESS_ENTER )
-    wx.Button(panel, ID_FILE_SELECT_BUTTON, 'File', 
-                  style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
-                  pos=(pubItemButton1XPos, pubItemYPos))
-    self.Bind(wx.EVT_BUTTON, self.OpenFile, id=ID_FILE_SELECT_BUTTON)
-    wx.Button(panel, ID_URI_ADD_BUTTON, 'Add', 
-                  style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
-                  pos=(pubItemButton2XPos, pubItemYPos))
-    self.Bind(wx.EVT_BUTTON, self.AddURI, id=ID_URI_ADD_BUTTON)
-    self.Bind(wx.EVT_TEXT_ENTER, self.AddURI, id=ID_URI_FORM)
-    
-    ## URI List
-    pubItemYPos += pubItemYPosStep
-    self.uri_list_form = wx.ListCtrl(panel, -1,
-                            style=wx.LC_LIST, size=pubItemListSize,
-                            pos=(pubItemFormXPos, pubItemYPos))
-    wx.Button(panel, ID_URI_DELETE_BUTTON, 'Delete', 
-                   style=wx.BU_EXACTFIT, size=pubItemSmallButtonSize, 
-                   pos=(pubItemButton2XPos, pubItemYPos))
-    self.Bind(wx.EVT_BUTTON, self.DeleteURI, id=ID_URI_DELETE_BUTTON)
-    pubItemYPos += pubItemYPosStep*2
-''' 
   def SetPubItem(self, pubitem):
     self.forms['ID'].SetLabel( "%d" % pubitem.id )
     self.forms['Nickname'].SetLabel( pubitem.nickname )
@@ -163,16 +179,16 @@ class PubShelfPubItemDialog(wx.Dialog):
     self.forms['Publisher'].SetValue( pubitem.publisher )
     self.forms['Volume'].SetValue( pubitem.volume )
     self.forms['Page'].SetValue( pubitem.page )
-    self.forms['Pub Year'].SetValue( "%d" % pubitem.pub_year )
+    self.forms['PubYear'].SetValue( "%d" % pubitem.pub_year )
 
     for tag in pubitem.tags:
-      self.tag_list.append("%s::%s" % (tag.category, tag.name))
+      self.tag_list.append("%s/%s" % (tag.category, tag.name))
 
     for link in pubitem.links:
-      self.uri_list.append("%s::%s" % (link.name, link.uri))
+      self.link_list[link.name] = link.uri
     
-    self.RefreshList(self.tag_list, self.tag_list_form)
-    self.RefreshList(self.uri_list, self.uri_list_form)
+    self.RefreshTagList()
+    self.RefreshLinkList()
 
   def OnClose(self, event):
     self.Close()
@@ -188,15 +204,14 @@ class PubShelfPubItemDialog(wx.Dialog):
     pubitem.publisher = self.forms['Publisher'].GetValue()
     pubitem.volume = self.forms['Volume'].GetValue()
     pubitem.page = self.forms['Page'].GetValue()
-    pubitem.pub_year = self.forms['Pub Year'].GetValue()
+    pubitem.pub_year = self.forms['PubYear'].GetValue()
     if(pubitem.pub_year): pubitem.pub_year = int(pubitem.pub_year)
 
     for tag_raw in self.tag_list:
-      (category, name) = tag_raw.split('::')
+      (category, name) = tag_raw.split('/')
       pubitem.tags.append( Tag(category=category,name=name) )
 
-    for link_raw in self.uri_list:
-      (name, uri) = link_raw.split('::')
+    for name, uri in self.link_list.iteritems():
       pubitem.links.append( Link(name=name, uri=uri) )
 
     if( pubitem.title ):
@@ -205,34 +220,43 @@ class PubShelfPubItemDialog(wx.Dialog):
     self.Close()
  
   def AddTag(self, event):
-    if(self.tag_list.count(self.tag_form.GetValue()) == 0):
-      self.tag_list.append(self.tag_form.GetValue())
-    self.tag_form.SetValue('')
-    self.RefreshList(self.tag_list, self.tag_list_form)
+    if(self.tag_list.count(self.forms['Tag'].GetValue()) == 0):
+      self.tag_list.append(self.forms['Tag'].GetValue())
+    self.forms['Tag'].SetValue('')
+    self.RefreshTagList()
   
   def DeleteTag(self, event):
-    for selected_tag in self.SelectedItemText(self.tag_list_form):
+    for selected_tag in self.SelectedItemText(self.forms['TagList']):
       self.tag_list.remove(selected_tag)
-    self.RefreshList(self.tag_list, self.tag_list_form)
+    self.RefreshTagList()
 
-  def AddURI(self, event):
-    if(self.uri_list.count(self.uri_form.GetValue()) == 0):
-      self.uri_list.append(self.uri_form.GetValue())
-    self.uri_form.SetValue('')
-    self.RefreshList(self.uri_list, self.uri_list_form)
+  def AddLink(self, event):
+    linkTitle = self.forms['LinkTitle'].GetValue()
+    linkURI = self.forms['LinkURI'].GetValue()
+    if( linkTitle != '' and linkURI != '' ):
+      if( not self.link_list.has_key(linkTitle) ):
+        self.link_list[linkTitle] = linkURI
+        self.forms['LinkTitle'].SetValue('')
+        self.forms['LinkURI'].SetValue('')
+        self.forms['LinkList'].Append( [linkTitle, linkURI] )
 
-  def DeleteURI(self, event):
-    for selected_uri in self.SelectedItemText(self.uri_list_form):
-      self.uri_list.remove(selected_uri)
-    self.RefreshList(self.uri_list, self.uri_list_form)
+  def DeleteLink(self, event):
+    linkTitle = event.GetItem().GetText()
+    del link_list[linkTitle]
+    self.RefreshLinkList()
 
-  def RefreshList(self,list,list_form):
-    list_form.DeleteAllItems()
+  def RefreshTagList(self):
+    self.forms['TagList'].DeleteAllItems()
     idx = 0
-    for item in list:
-      list_form.InsertStringItem(idx,item)
+    for item in self.tag_list:
+      self.forms['TagList'].InsertStringItem(idx,item)
       idx += 1
-    
+  
+  def RefreshLinkList(self):
+    self.forms['LinkList'].DeleteAllItems()
+    for title, uri in self.link_list.iteritems():
+      self.forms['LinkList'].Append( [linkTitle,linkURI] )
+
   def SelectedItemText(self, listctrl):
     rv = []
     selected_idx = listctrl.GetFirstSelected()
@@ -250,11 +274,9 @@ class PubShelfPubItemDialog(wx.Dialog):
     return rv
 
   def OpenFile(self, event):
-    home_path = self.conf['home_path']
-    file_dialog = wx.FileDialog(self, "Shooze a file", home_path, 
+    file_dialog = wx.FileDialog(self, "Shooze a file", self.conf['dir_file'],
                         "", "*.*", wx.OPEN)
     if( file_dialog.ShowModal() == wx.ID_OK ):
       file_path = file_dialog.GetPath()
-      self.uri_form.SetValue(file_path)
-
+      self.forms['LinkURI'].SetValue(file_path)
     file_dialog.Destroy()
