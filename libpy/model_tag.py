@@ -8,18 +8,21 @@ class Tag(PubShelfModel):
     self.created_at = created_at
     self.articles = []
 
-  def insert(self, cursor):
+  def delete_with_cursor_and_pubitem(self, cursor, pubitem):
+    sql = "DELETE FROM tags_pubitems WHERE pubitem_id=?"
+    cursor.execute(sql, pubitem.id)
+
+  def insert_with_cursor(self, cursor):
     sql = "INSERT INTO tags (category, name) VALUES (?,?)"
     cursor.execute(sql, (self.category, self.name))
     return cursor.lastrowid
     
-  def insert_with_pubitem_id(self, cursor, pubitem_id):
+  def insert_with_cursor_and_pubitem(self, cursor, pubitem):
     tag_id = self.is_available(cursor)
-    if( tag_id < 0 ):
-      tag_id = self.insert(cursor)
+    if( tag_id < 0 ): tag_id = self.insert_with_cursor(cursor)
 
     sql = "INSERT INTO tags_pubitems (pubitem_id, tag_id) VALUES (?,?)"
-    cursor.execute(sql, (pubitem_id, tag_id))
+    cursor.execute(sql, (pubitem.id, tag_id))
 
   def find_all(self):
     rv = []
@@ -35,23 +38,6 @@ class Tag(PubShelfModel):
       return cursor.fetchone()[0]
     except:
       return -1
-
-  def find_by_pubitem(self, pubitem):
-    rv = []
-
-  #def find_by_name_and_category(self, cur, name, category):
-  #  sql = "SELECT id FROM tags where category=? AND name=?"
-  #  cur.execute(sql, (category, name))
-  #  tag_id = 0
-  #  
-  #  try:
-  #    tag_id = cur.fetchone()[0]
-  #  except:
-  #    sql = "INSERT INTO tags (category, name) VALUES (?,?)"
-  #    cur.execute(sql, (self.category, self.name))
-  #    tag_id = cur.lastrowid
-  # 
-  #  return Tag(id=tag_id, name=name, category=category)
 
   def find_by_pubitem(self, pubitem):
     rv = []

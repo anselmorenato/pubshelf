@@ -38,33 +38,37 @@ class PubShelfItemContent(wx.html.HtmlWindow):
       rv += "<LI><A HREF='%s'>%s</A>" % (link.uri, link.name)
     rv += "</UL></TD></TR>"
     
+    url_add = "<A HREF='AddComment'><font color='white'>Add</font></A>"
     rv += "<TR><TD BGCOLOR='blue'><font color='white'>"
-    rv += "<b>Comments</b></font></TD></TR>"
-    rv += "<TR><TD BGCOLOR='#ccccff' ALIGN=RIGHT><font color='blue'>"
-    rv += "<A HREF='AddComment'>Add Comment</A></font></TD></TR>"
+    rv += "<b>Comments</b> %s </font></TD></TR>" % url_add
     for comment in pubitem.comments:
-      rv += "<TR><TD><b>%s</b> by <i>%s</i> (%s)</TD></TR>" \
-              % (comment.title, comment.author, comment.created_at)
+      url_edit = "<A HREF='EditComment/%d'>[Edit]</A>" % comment.id
+      rv += "<TR><TD><b>%s</b> by <i>%s</i> (%s) %s</TD></TR>" \
+              % (comment.title, comment.author, comment.created_at, url_edit)
       rv += "<TR><TD>%s</TD></TR>" % comment.textbody
-      rv += "<TR><TD BGCOLOR='#ccccff' ALIGN=RIGHT><font color='blue'>"
-      rv += "<A HREF='EditComment/%d'>Edit</A></font/></TD></TR> " % comment.id
     rv += "</TABLE>"
     self.SetPage(rv)
 
   def OnLinkClicked(self, link):
     uri = link.GetHref()
+    c = Comment(pubitem_id=self.pubitem.id, author=self.conf['author_name'])
     if( uri == 'AddComment' ):
-      dialogComment = PubShelfCommentDialog(None,-1,self.pubitem)
+      dialogComment = PubShelfCommentDialog(None,-1)
+      dialogComment.SetComment(c)
       dialogComment.ShowModal()
       dialogComment.Destroy()
+      self.pubitem.set_comments()
+      self.SetPubItem( self.pubitem )
     elif( uri.startswith('EditComment') ):
       comment_id = atoi(uri.replace('EditComment/',''))
-      c = Comment(id=comment_id)
-      comment = c.find( )[0]
-      dialogComment = PubShelfCommentDialog(None,-1,self.pubitem)
+      c.id = comment_id
+      comment = c.find()[0]
+      dialogComment = PubShelfCommentDialog(None,-1)
       dialogComment.SetComment(comment)
       dialogComment.ShowModal()
       dialogComment.Destroy()
+      self.pubitem.set_comments()
+      self.SetPubItem( self.pubitem )
     elif( uri.startswith('/') ):
       if( uri.endswith('pdf') ):
         os.system(self.conf['apps']['pdf']+' '+uri)

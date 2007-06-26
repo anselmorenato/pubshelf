@@ -1,4 +1,4 @@
-import wx, wx.html
+import wx
 from string import atoi
 import sys
 sys.path.append('../libpy/')
@@ -10,72 +10,68 @@ ID_SEARCH_BUTTON = 3000
 ID_CLOSE_BUTTON = 3001
 ID_SEARCH_FORM  = 3002
 
-searchDialogSize = (600,600)
-searchSiteComboSize = (150,28)
-searchSiteComboPos = (10,10)
-searchFormSize = (330,28)
-searchFormPos = (170,10)
-searchDoButtonSize = (80,28)
-searchDoButtonPos = (510,10)
-searchResultLogSize = (580,10)
-searchResultLogPos = (10,40)
-searchResultSize = (580,480)
-searchResultPos = (10,60)
-searchResultAuthorWidth = 100
-searchResultTitleWidth = 410
-searchResultPubYearWidth = 50
-searchCloseButtonSize = (100,30)
-searchCloseButtonPos = (250,550)
+DIALOG_SIZE = (600,600)
+authorWidth = 100
+titleWidth = 410
+yearWidth = 50
+logSize = (580,-1)
+resultsListSize = (580,430)
 
 AVAILABLE_SITES = ['pubmed','google scholar']
-#AVAILABLE_SITES = ['pubmed']
 PUBMED_RETMAX = '50'
 
 class PubShelfSearchDialog(wx.Dialog):
   def __init__(self, parent, id):
-    wx.Dialog.__init__(self, parent, id, 'Search', size=searchDialogSize)
+    wx.Dialog.__init__(self, parent, id, 'Search', size=DIALOG_SIZE)
     self.parent = parent
 
     panel = wx.Panel(self, -1)
+    mainSizer = wx.BoxSizer(wx.VERTICAL)
 
     ## Selecting site for searching
-    self.site = wx.ComboBox(panel, -1, 
-                          size=searchSiteComboSize, pos=searchSiteComboPos,
-                          choices=AVAILABLE_SITES, style=wx.CB_READONLY)
+    self.site = wx.ComboBox(panel, -1, choices=AVAILABLE_SITES,
+                            style=wx.CB_READONLY)
     self.site.SetValue(AVAILABLE_SITES[0])
 
     ## Terms for searching
     self.search_form = wx.TextCtrl(panel, ID_SEARCH_FORM, '', 
-                          size=searchFormSize, pos=searchFormPos,
                           style=wx.TE_LEFT|wx.TE_PROCESS_ENTER)
     self.Bind(wx.EVT_TEXT_ENTER, self.DoSearch, id=ID_SEARCH_FORM)
 
     ## Do Search!
-    search_button = wx.Button(panel, ID_SEARCH_BUTTON, 'Search!', 
-                          style=wx.BU_EXACTFIT,
-                          size=searchDoButtonSize, pos=searchDoButtonPos)
+    search_button = wx.Button(panel, ID_SEARCH_BUTTON, 'Search!')
     self.Bind(wx.EVT_BUTTON, self.DoSearch, id=ID_SEARCH_BUTTON)
 
+    headSizer = wx.FlexGridSizer(cols=3,vgap=30,hgap=10)
+    headSizer.AddGrowableCol(1)
+    headSizer.Add(self.site, 0, wx.ALIGN_CENTER)
+    headSizer.Add(self.search_form, 0, wx.EXPAND)
+    headSizer.Add(search_button, 0, wx.ALIGN_CENTER)
+    mainSizer.Add(headSizer, 0, wx.EXPAND|wx.ALL, 10)
+
     ## Detailed result
-    self.search_log = wx.StaticText(panel, -1, '',
-                        size=searchResultLogSize, pos=searchResultLogPos)
-    self.search_results = wx.ListCtrl(panel, -1, 
-                            style=wx.LC_REPORT|wx.LC_HRULES|wx.LC_VRULES,
-                            size=searchResultSize, pos=searchResultPos)
-    self.search_results.InsertColumn(0, 'Authors', 
-                                    width=searchResultAuthorWidth)
-    self.search_results.InsertColumn(1, 'Title',
-                                    width=searchResultTitleWidth)
-    self.search_results.InsertColumn(2, 'Year',
-                                    width=searchResultPubYearWidth)
+    self.search_log = wx.StaticText(panel, -1, '', size=logSize)
+    mainSizer.Add(self.search_log, 0, wx.EXPAND|wx.ALL, 10)
+
+    self.search_results = wx.ListCtrl(panel, -1, size=resultsListSize,
+                            style=wx.LC_REPORT|wx.LC_HRULES|wx.LC_VRULES )
+    self.search_results.InsertColumn(0, 'Authors', width=authorWidth)
+    self.search_results.InsertColumn(1, 'Title', width=titleWidth)
+    self.search_results.InsertColumn(2, 'Year', width=yearWidth)
     self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.LaunchPubItemDialog)
+    mainSizer.Add(self.search_results, 0, wx.EXPAND|wx.ALL, 10)
    
     ## Closing window
-    close_button = wx.Button(panel, ID_CLOSE_BUTTON, 'Close', 
-                          style=wx.BU_EXACTFIT,
-                          size=searchCloseButtonSize, pos=searchCloseButtonPos)
+    close_button = wx.Button(panel, ID_CLOSE_BUTTON, 'Close')
     self.Bind(wx.EVT_BUTTON, self.OnClose, id=ID_CLOSE_BUTTON)
+
+    buttonSizer = wx.BoxSizer(wx.HORIZONTAL)
+    buttonSizer.Add( (10,10), 1 )
+    buttonSizer.Add( close_button )
+    buttonSizer.Add( (10,10), 1 )
+    mainSizer.Add(buttonSizer, 0, wx.EXPAND|wx.BOTTOM, 10)
     
+    panel.SetSizer(mainSizer)
     self.Centre()
 
   def OnClose(self, event):

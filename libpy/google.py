@@ -1,4 +1,4 @@
-import cookielib, urllib2, re;
+import cookielib, urllib2, re
 from string import atoi
 from model_pubitem import PubItem
 
@@ -8,9 +8,8 @@ def parse_bibtex(raw):
     p.title = re.search('title={{(.+)}}', raw).group(1)
   if( re.search('author={(.+)}',raw) ):
     p.authors = re.search('author={(.+)}',raw).group(1)
-    p.authors = p.authors.replace(', ',' ')
     p.authors = p.authors.replace('.','')
-    p.authors = p.authors.replace(' and ',', ')
+    p.authors = p.authors.replace(' and ','; ')
   if( re.search('journal={(.+)}',raw) ):
     p.journal = re.search('journal={(.+)}',raw).group(1)
   if( re.search('volume={(.+)}',raw) ):
