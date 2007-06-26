@@ -1,0 +1,20 @@
+#WinXP 에서 설치하는 방법
+
+= 기본적으로 설치해야 하는 것들 =
+  * tortoisesvn ( http://tortoisesvn.net/downloads ) -- ver. 1.4.4
+  * sqlite3 ( http://www.sqlite.org/download.html ) -- ver. 3.4.0
+  * python ( http://www.python.org/download/ ) -- ver. 2.5.1 (*2.5 이상*)
+
+= 소스 받아오기 =
+ svn checkout http://pubshelf.googlecode.com/svn/trunk/ pubshelf
+
+= PyYAML ==
+  * ttp://pyyaml.org/wiki/PyYAML -- ver. 3.0.5
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+
