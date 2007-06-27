@@ -2,8 +2,8 @@
 
 import wx, yaml
 import sys
-sys.path.append('./libpy/')
-sys.path.append('./gui/')
+sys.path.append('libpy')
+sys.path.append('gui')
 from frame import PubShelfFrame
 
 class PubShelfGUI(wx.App):
