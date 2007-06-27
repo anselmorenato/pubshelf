@@ -12,7 +12,7 @@ class Comment(PubShelfModel):
 
   def delete_with_cursor_and_pubitem(self, cursor, pubitem):
     sql = "DELETE FROM comments WHERE pubitem_id=?"
-    cursor.execute(sql, pubitem.id)
+    cursor.execute(sql, [pubitem.id])
 
   def insert_with_cursor(self, cursor):
     sql = "INSERT INTO comments (pubitem_id,title,author,textbody) \
