@@ -74,9 +74,8 @@ class PubShelfItemContent(wx.html.HtmlWindow):
       self.SetPubItem( self.pubitem )
     elif( uri.startswith('/') ):
       if( uri.endswith('pdf') ):
-        os.system(self.conf['apps']['pdf']+' '+uri)
+        os.system(self.conf['apps']['pdf']+' "'+uri+'"')
       else:
-        os.system(self.conf['apps']['html']+' '+uri)
+        os.system(self.conf['apps']['html']+' "'+uri+'"')
     else:
-      uri = uri.replace('&','\&')
-      os.system(self.conf['apps']['html']+' '+uri)
+      os.system(self.conf['apps']['html']+' "'+uri+'"')
