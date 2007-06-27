@@ -6,7 +6,8 @@ from conf import PubShelfConf
 class PubShelfDBI:
   def __init__(self):
     conf = PubShelfConf()
-    db_file = conf.item['dir_home']+conf.item['dir_db']+conf.item['db_name']
+    db_file = os.path.join(conf.item['dir_home'],conf.item['dir_db'],
+		    		conf.item['db_name'])
 
     try:
       #self.conn = sqlite.connect(db_file)
