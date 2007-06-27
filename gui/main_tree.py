@@ -20,9 +20,12 @@ class PubShelfTagTree(wx.TreeCtrl):
     
     t = Tag()
     for tag in t.find_all():
-      if(not self.categories.has_key(tag.category)):
-        self.categories[tag.category] = self.AppendItem(self.root, tag.category)
-      self.AppendItem(self.categories[tag.category], tag.name)
+      if(tag.category == ''):
+        self.AppendItem(self.categories['No Category'], tag.name)
+      else:
+        if(not self.categories.has_key(tag.category)):
+          self.categories[tag.category]=self.AppendItem(self.root, tag.category)
+        self.AppendItem(self.categories[tag.category], tag.name)
     
   def OnTreeSelChanged(self, event):
     selected_item = event.GetItem()
@@ -40,6 +43,7 @@ class PubShelfTagTree(wx.TreeCtrl):
     else:
       parent_item = self.GetItemParent(selected_item)
       tag_category = self.GetItemText(parent_item)
+      if( tag_category == 'No Category' ): tag_category = ''
       pubitems = pi.find_by_tag_category_and_name(tag_category, selected_text)
 	
     item_list = self.GetParent().GetParent().itemList

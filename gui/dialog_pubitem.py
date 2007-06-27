@@ -228,7 +228,7 @@ class PubShelfPubItemDialog(wx.Frame):
     if(pubitem.pub_year): pubitem.pub_year = int(pubitem.pub_year)
 
     for tag_raw in self.tag_list:
-      (category, name) = tag_raw.split('/')
+      (category, name) = tag_raw.split('/',1)
       pubitem.tags.append( Tag(category=category,name=name) )
 
     for name, uri in self.link_list.iteritems():
@@ -244,8 +244,10 @@ class PubShelfPubItemDialog(wx.Frame):
     self.Close()
  
   def AddTag(self, event):
-    if(self.tag_list.count(self.forms['tag'].GetValue()) == 0):
-      self.tag_list.append(self.forms['tag'].GetValue())
+    tag_raw = self.forms['tag'].GetValue()
+    if( tag_raw.find('/') < 0 ): tag_raw = '/'+tag_raw
+    if(self.tag_list.count(tag_raw) == 0):
+      self.tag_list.append(tag_raw)
     self.forms['tag'].SetValue('')
     self.RefreshTagList()
   

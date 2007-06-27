@@ -4,7 +4,7 @@ import wx, yaml
 import sys
 sys.path.append('libpy')
 sys.path.append('gui')
-from frame import PubShelfFrame
+from main_frame import PubShelfFrame
 
 class PubShelfGUI(wx.App):
   def OnInit(self):
