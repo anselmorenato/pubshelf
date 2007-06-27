@@ -21,6 +21,7 @@ class PubShelfItemList(wx.ListCtrl):
     self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnPubItemActivated)
 
   def SetItemList(self, pubitems):
+    self.pubitems = []
     for pubitem in pubitems:
       self.pubitems.append( pubitem )
     self.Refresh()
