@@ -1,8 +1,10 @@
 #dir_file: /home/linusben/Desktop/
-dir_file: /Users/Ram/Desktop/
+#dir_file: /Users/Ram/Desktop/
+dir_file: C:\
 #dir_home: /home/linusben/pubshelf/
-dir_home: /Users/Ram/tk320/pubshelf/
-dir_db: db.test/
+#dir_home: /Users/Ram/tk320/pubshelf/
+dir_home: C:\pubshelf\
+dir_db: db.test
 db_name: pubshelf.db
 author_name: Taejoon Kwon
 apps:
@@ -11,5 +13,9 @@ apps:
   #html: /usr/bin/firefox
 
   ## Mac OSX
-  pdf: open -a Preview
-  html: open -a Firefox
+  #pdf: open -a Preview
+  #html: open -a Firefox
+
+  ## Microsoft Windows
+  pdf: start
+  html: explorer
