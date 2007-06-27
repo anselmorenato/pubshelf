@@ -59,5 +59,4 @@ class PubShelfItemList(wx.ListCtrl):
     frame = self.GetParent().GetParent().GetParent()
     dialog = PubShelfPubItemDialog(frame, -1)
     dialog.SetPubItem(pubitem)
-    dialog.ShowModal()
-    dialog.Destroy()
+    dialog.Show()

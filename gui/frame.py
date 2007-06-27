@@ -65,18 +65,15 @@ class PubShelfFrame(wx.Frame):
 
   def PubItemDialog(self, event):
     new_dialog = PubShelfPubItemDialog(self, -1)
-    new_dialog.ShowModal()
-    new_dialog.Destroy()
+    new_dialog.Show()
   
   def SearchDialog(self, event):
     search_dialog = PubShelfSearchDialog(self, -1)
-    search_dialog.ShowModal()
-    search_dialog.Destroy()
+    search_dialog.Show()
   
   def ExportDialog(self, event):
     export_dialog = PubShelfExportDialog(self, -1)
-    export_dialog.ShowModal()
-    export_dialog.Destroy()
+    export_dialog.Show()
   
   def OnResize(self, event):
     self.itemList.OnResize()

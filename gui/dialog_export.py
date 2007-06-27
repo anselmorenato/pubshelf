@@ -9,9 +9,9 @@ ID_CLOSE_BUTTON = 5001
 ID_FILENAME_FORM = 5002
 
 DIALOG_SIZE = (400,150)
-class PubShelfExportDialog(wx.Dialog):
+class PubShelfExportDialog(wx.Frame):
   def __init__(self, parent, id):
-    wx.Dialog.__init__(self, parent, id, 'PubItem', size=DIALOG_SIZE)
+    wx.Frame.__init__(self, parent, id, 'PubItem', size=DIALOG_SIZE)
     self.forms = dict()
     psconf = PubShelfConf()
 
@@ -70,5 +70,3 @@ class PubShelfExportDialog(wx.Dialog):
       file_export.write(citation)
     file_export.close()
     self.Close()
-    #file_export = open(filename_export, 'w')
-    pass

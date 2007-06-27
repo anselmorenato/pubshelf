@@ -22,9 +22,9 @@ linkTitleWidth = 130
 linkURIWidth = 310
 AVAILABLE_PUB_TYPES = ['paper','book']
 
-class PubShelfPubItemDialog(wx.Dialog):
+class PubShelfPubItemDialog(wx.Frame):
   def __init__(self, parent, id):
-    wx.Dialog.__init__(self, parent, id, 'PubItem', size=DIALOG_SIZE)
+    wx.Frame.__init__(self, parent, id, 'PubItem', size=DIALOG_SIZE)
     panel = wx.Panel(self, -1)
 
     psconf = PubShelfConf()
