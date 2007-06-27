@@ -12,7 +12,7 @@ class Link(PubShelfModel):
 
   def delete_with_cursor_and_pubitem(self, cursor, pubitem):
     sql = "DELETE FROM links WHERE pubitem_id=?"
-    cursor.execute(sql, pubitem.id)
+    cursor.execute("DELETE FROM links WHERE pubitem_id=?",[pubitem.id])
     
   def insert_with_cursor_and_pubitem(self, cursor, pubitem):
     sql = "INSERT INTO links (pubitem_id, name, uri) VALUES (?,?,?)"

@@ -6,7 +6,8 @@ from model_tag import Tag
 from model_link import Link
 
 ID_SUBMIT_BUTTON = 2000
-ID_CLOSE_BUTTON = 2001
+ID_DELETE_BUTTON = 2001
+ID_CLOSE_BUTTON = 2002
 ID_FILE_SELECT_BUTTON = 2010
 ID_LINK_ADD_BUTTON = 2011
 ID_LINK_DELETE_BUTTON = 2012
@@ -159,13 +160,16 @@ class PubShelfPubItemDialog(wx.Dialog):
 
     ## Buttons
     submitButton = wx.Button(panel, ID_SUBMIT_BUTTON, 'Submit')
+    deleteButton = wx.Button(panel, ID_DELETE_BUTTON, 'Delete')
     closeButton = wx.Button(panel, ID_CLOSE_BUTTON, 'Close')
     self.Bind(wx.EVT_BUTTON, self.OnSubmit, id=ID_SUBMIT_BUTTON)
+    self.Bind(wx.EVT_BUTTON, self.OnDelete, id=ID_DELETE_BUTTON)
     self.Bind(wx.EVT_BUTTON, self.OnClose, id=ID_CLOSE_BUTTON)
     
     buttonSizer = wx.BoxSizer(wx.HORIZONTAL)
     buttonSizer.Add((10,10), wx.EXPAND)
     buttonSizer.Add(submitButton, wx.EXPAND)
+    buttonSizer.Add(deleteButton, wx.EXPAND)
     buttonSizer.Add(closeButton, wx.EXPAND)
     buttonSizer.Add((10,10), wx.EXPAND)
     mainSizer.Add(buttonSizer, 0, wx.EXPAND|wx.ALL, 10)
@@ -196,9 +200,22 @@ class PubShelfPubItemDialog(wx.Dialog):
   def OnClose(self, event):
     self.Close()
 
+  def OnDelete(self, event):
+    pubitem = PubItem()
+    pubitem.id = int(self.forms['id'].GetLabel())
+    if( pubitem.id ): 
+      pubitem.id = int(pubitem.id)
+      pubitem.delete()
+      self.GetParent().itemList.remove_by_pubitem_id(pubitem.id)
+      self.GetParent().itemList.Refresh()
+      self.GetParent().itemContent.SetBlank()
+      self.GetParent().tree.Refresh()
+      self.Close()
+    
   def OnSubmit(self, event):
     pubitem = PubItem()
     pubitem.id = self.forms['id'].GetLabel()
+    if( pubitem.id ): pubitem.id = int(pubitem.id)
     pubitem.nickname = self.forms['nickname'].GetLabel()
     pubitem.pub_type = self.forms['pub_type'].GetValue()
     pubitem.title = self.forms['title'].GetValue()

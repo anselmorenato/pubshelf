@@ -45,9 +45,12 @@ class PubShelfItemContent(wx.html.HtmlWindow):
       url_edit = "<A HREF='EditComment/%d'>[Edit]</A>" % comment.id
       rv += "<TR><TD><b>%s</b> by <i>%s</i> (%s) %s</TD></TR>" \
               % (comment.title, comment.author, comment.created_at, url_edit)
-      rv += "<TR><TD>%s</TD></TR>" % comment.textbody
+      rv += "<TR><TD><PRE>%s</PRE></TD></TR>" % comment.textbody
     rv += "</TABLE>"
     self.SetPage(rv)
+  
+  def SetBlank(self):
+    self.SetPage('')
 
   def OnLinkClicked(self, link):
     uri = link.GetHref()

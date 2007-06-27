@@ -63,8 +63,28 @@ class PubItem(PubShelfModel):
     cur.execute(sql % nickname_base)
     self.nickname = "%s.%d" % (self.get_nickname_base(), cur.fetchone()[0]+1)
 
+  def delete(self):
+    try:
+      cursor = self.get_dbi().conn.cursor()
+      sql = "DELETE FROM pubitems WHERE id=?"
+      cursor.execute(sql,[self.id])
+      
+      l = Link()
+      l.delete_with_cursor_and_pubitem(cursor, self)
+        
+      c = Comment()
+      c.delete_with_cursor_and_pubitem(cursor, self)
+
+      t = Tag()
+      t.delete_with_cursor_and_pubitem(cursor, self)
+      t.clean_with_cursor(cursor)
+
+      self.get_dbi().conn.commit()
+    except:
+      print "Error in delete PubItem"
+      raise
+
   def update(self):
-    if( self.nickname == '' ): self.set_nickname()
     try:
       cursor = self.get_dbi().conn.cursor()
       cursor.execute("UPDATE pubitems SET pub_type=?, title=?, authors=?,\
@@ -93,9 +113,10 @@ class PubItem(PubShelfModel):
       if( len(self.tags) ):
         for tag in self.tags:
           tag.insert_with_cursor_and_pubitem(cursor, self)
+      t.clean_with_cursor(cursor)
 
       self.get_dbi().conn.commit()
-                  
+
     except:
       print "Error in update PubItem"
       raise
@@ -208,7 +229,6 @@ class PubItem(PubShelfModel):
 
     cur = self.get_dbi().conn.cursor()
     for row in cur.execute(sql):
-    #for row in cur.execute(sql, (nickname)):
       pubitem = PubItem(id=row[0], nickname=row[1], pub_type=row[2], \
                   title=row[3], authors=row[4], journal=row[5], \
                   publisher=row[6], volume=row[7], page=row[8], \

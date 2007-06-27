@@ -33,6 +33,7 @@ class PubShelfFrame(wx.Frame):
     toolbar.AddSimpleTool(2, tool_image_search, "Search")
     toolbar.AddSeparator()
     toolbar.AddSimpleTool(3, tool_image_export, "Export")
+    toolbar.SetToolBitmapSize(wx.Size(100,100))
     toolbar.Realize()
     self.Bind(wx.EVT_TOOL, self.PubItemDialog, id=1)
     self.Bind(wx.EVT_TOOL, self.SearchDialog, id=2)

@@ -14,15 +14,29 @@ class PubShelfItemList(wx.ListCtrl):
     self.InsertColumn(0, 'NickName', width=WIDTH_NICKNAME)
     self.InsertColumn(1, 'Year', width=WIDTH_YEAR)
     self.InsertColumn(2, 'Title', width=WIDTH_TITLE)
+    
+    self.pubitems = []
 
-    #self.Bind(wx.EVT_SIZE, self.OnItemListSizeChanged)
     self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnListItemSelected)
     self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnPubItemActivated)
 
   def SetItemList(self, pubitems):
-    self.DeleteAllItems()
     for pubitem in pubitems:
+      self.pubitems.append( pubitem )
+    self.Refresh()
+  
+  def remove_by_pubitem_id(self, id):
+    idx = 0;
+    for pubitem in self.pubitems:
+      if(pubitem.id == id): 
+        del self.pubitems[idx]
+      idx += 1
+
+  def Refresh(self):
+    self.DeleteAllItems()
+    for pubitem in self.pubitems:
       self.Append([pubitem.nickname, pubitem.pub_year, pubitem.title])
+      
 
   def OnResize(self):
     if( self.GetSize().x > 0 ):
