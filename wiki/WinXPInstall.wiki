@@ -12,5 +12,10 @@
   * Checkout directory - C:\pubshelf
 
 = 설치 =
+  * C:\pubshelf\pubshelf.tmpl 파일을 C:\pubshelf\pubshelf.yaml 로 복사하고 내용 수정
   * sqlite3.exe 실행 파일을 c:\pubshelf 로 옮김
-  * cmd 창 띄워서 sqlite3 db/pubshelf.db < config\schema.sqlite3.sql 실행
+  * cmd 창 띄워서 다음 명령 실행
+  cd C:\
+  cd pubshelf\
+  sqlite3 db\pubshelf.db < config\schema.sqlite3.sql 실행
+  C:\Python25\python pubshelf.py
