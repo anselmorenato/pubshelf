@@ -131,14 +131,14 @@ class PubItem(PubShelfModel):
               (self.nickname, self.pub_type, self.title,
               self.authors, self.journal, self.publisher,
               self.volume, self.page, self.pub_year))
-      self.pubitem_id = cur.lastrowid
+      self.id = cur.lastrowid
 
       for link in self.links:
-        link.pubitem_id = self.pubitem_id
+        link.pubitem_id = self.id
         link.insert_with_cursor_and_pubitem(cur, self)
 
       for comment in self.comments:
-        comment.pubitem_id = self.pubitem_id
+        comment.pubitem_id = self.id
         comment.insert_with_cursor(cur)
       
       for tag in self.tags:
@@ -211,7 +211,7 @@ class PubItem(PubShelfModel):
               AND t.category=? AND t.name=? ORDER BY p.pub_year DESC" 
 
     cur = self.get_dbi().conn.cursor()
-    for row in cur.execute(sql, (tag_category, tag_name)):
+    for row in cur.execute(sql, [tag_category, tag_name]):
       pubitem = PubItem(id=row[0], nickname=row[1], pub_type=row[2], \
                   title=row[3], authors=row[4], journal=row[5], \
                   publisher=row[6], volume=row[7], page=row[8], \
