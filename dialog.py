@@ -2,8 +2,8 @@
 import wx
 import yaml
 import sys
-sys.path.append('./gui/')
-sys.path.append('./libpy/')
+sys.path.append('gui')
+sys.path.append('libpy')
 
 from dialog_pubitem import PubShelfPubItemDialog
 from dialog_search import PubShelfSearchDialog
@@ -14,9 +14,8 @@ app = wx.App(0)
 
 #dia = PubShelfExportDialog(None, -1)
 #dia = PubShelfSearchDialog(None, -1)
-dia = PubShelfPubItemDialog(None, -1)
-#dia = PubShelfCommentDialog(None,-1)
-dia.ShowModal()
-dia.Destroy()
+#dia = PubShelfPubItemDialog(None, -1)
+dia = PubShelfCommentDialog(None,-1)
+dia.Show()
 
 app.MainLoop()

@@ -1,13 +1,14 @@
 #!/usr/bin/python
 import yaml
 import sys
-sys.path.append('../libpy/')
+sys.path.append('..\libpy')
+sys.path.append('../libpy')
 from model_pubitem import PubItem
 from model_tag import Tag
 from model_link import Link
 from model_comment import Comment
 
-data1 = yaml.load( file('./example1.yaml','r') )
+data1 = yaml.load( file('example1.yaml','r') )
 pm1 = PubItem(title=data1['title'], authors=data1['authors'],
               journal=data1['journal'], volume=data1['volume'],
               page=data1['page'], pub_year=data1['pub_year'],
