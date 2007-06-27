@@ -8,9 +8,9 @@ ID_CLOSE_BUTTON = 4002
 
 DIALOG_SIZE = (400,400)
 TEXTBODY_SIZE = (300,200)
-class PubShelfCommentDialog(wx.Dialog):
+class PubShelfCommentDialog(wx.Frame):
   def __init__(self, parent, id):
-    wx.Dialog.__init__(self, parent, id, 'PubItem', size=DIALOG_SIZE)
+    wx.Frame.__init__(self, parent, id, 'PubItem', size=DIALOG_SIZE)
     self.forms = dict()
     panel = wx.Panel(self, -1)
 
@@ -85,12 +85,16 @@ class PubShelfCommentDialog(wx.Dialog):
         c.update()
       else:
         c.insert()
+      self.GetParent().pubitem.set_comments()
+      self.GetParent().SetPubItem( self.GetParent().pubitem )
       self.Close()
   
   def OnDelete(self, event):
     c = Comment()
     c.id = self.forms['id'].GetLabel()
     if( c.id != '0' ): c.delete()
+    self.GetParent().pubitem.set_comments()
+    self.GetParent().SetPubItem( self.GetParent().pubitem )
     self.Close()
 
   def SetComment(self, comment):

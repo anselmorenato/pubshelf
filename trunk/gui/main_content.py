@@ -56,22 +56,16 @@ class PubShelfItemContent(wx.html.HtmlWindow):
     uri = link.GetHref()
     c = Comment(pubitem_id=self.pubitem.id, author=self.conf['author_name'])
     if( uri == 'AddComment' ):
-      dialogComment = PubShelfCommentDialog(None,-1)
+      dialogComment = PubShelfCommentDialog(self,-1)
       dialogComment.SetComment(c)
-      dialogComment.ShowModal()
-      dialogComment.Destroy()
-      self.pubitem.set_comments()
-      self.SetPubItem( self.pubitem )
+      dialogComment.Show()
     elif( uri.startswith('EditComment') ):
       comment_id = atoi(uri.replace('EditComment/',''))
       c.id = comment_id
       comment = c.find()[0]
-      dialogComment = PubShelfCommentDialog(None,-1)
+      dialogComment = PubShelfCommentDialog(self,-1)
       dialogComment.SetComment(comment)
-      dialogComment.ShowModal()
-      dialogComment.Destroy()
-      self.pubitem.set_comments()
-      self.SetPubItem( self.pubitem )
+      dialogComment.Show()
     elif( uri.startswith('/') ):
       if( uri.endswith('pdf') ):
         os.system(self.conf['apps']['pdf']+' "'+uri+'"')
