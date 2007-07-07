@@ -101,12 +101,12 @@ class PubItem(PubShelfModel):
           link.pubitem_id = self.id
           link.insert_with_cursor_and_pubitem(cursor, self)
         
-      c = Comment()
-      c.delete_with_cursor_and_pubitem(cursor, self)
-      if( len(self.comments) ):
-        for comment in self.comments:
-          comment.pubitem_id = self.id
-          comment.insert_with_cursor(cursor)
+      #c = Comment()
+      #c.delete_with_cursor_and_pubitem(cursor, self)
+      #if( len(self.comments) ):
+      #  for comment in self.comments:
+      #    comment.pubitem_id = self.id
+      #    comment.insert_with_cursor(cursor)
       
       t = Tag()
       t.delete_with_cursor_and_pubitem(cursor, self)
