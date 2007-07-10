@@ -10,6 +10,12 @@ class Link(PubShelfModel):
     self.uri = uri
     self.created_at = created_at
 
+  def update_uri(self):
+    cursor = self.get_dbi().conn.cursor()
+    sql = "UPDATE links SET uri=? WHERE id=?"
+    cursor.execute(sql, (self.uri, self.id))
+    self.get_dbi().conn.commit()
+    
   def delete_with_cursor_and_pubitem(self, cursor, pubitem):
     sql = "DELETE FROM links WHERE pubitem_id=?"
     cursor.execute("DELETE FROM links WHERE pubitem_id=?",[pubitem.id])
@@ -18,19 +24,18 @@ class Link(PubShelfModel):
     sql = "INSERT INTO links (pubitem_id, name, uri) VALUES (?,?,?)"
     conf = PubShelfConf()
     nickname = pubitem.nickname
-    if( self.uri.startswith('/') ):
-      target_suffix = re.search(r'\.([a-z]+)$', self.uri).group(1)
+    if( os.path.isfile(self.uri) ):
+      pub_year = str(pubitem.pub_year)
+      file_dir = os.path.join(conf.item['dir_db'], pub_year)
+      if( not os.path.isdir(file_dir) ): os.mkdir(file_dir)
 
-      target_dir1 = conf.item['dir_db']
-      target_dir2 = "%s%s/" % (target_dir1,str(pubitem.pub_year))
-      if( not os.path.isdir(target_dir2) ): os.mkdir(target_dir2)
-
-      target_filename = "%s_%s.%s" % (nickname, self.name, target_suffix)
-      target_uri = "%s%s" % (target_dir2, target_filename)
+      file_suffix = re.search(r'\.([a-z]+)$', self.uri).group(1)
+      filename = "%s_%s.%s" % (nickname, self.name, file_suffix)
+      file_path = os.path.join(file_dir, filename)
       
-      if( self.uri != target_uri ):
-        shutil.copyfile(self.uri, target_uri)
-        self.uri = target_uri
+      if( self.uri != file_path ):
+        shutil.copyfile(self.uri, file_path)
+        self.uri = os.path.join(pub_year, filename)
 
     cursor.execute(sql, (self.pubitem_id, self.name, self.uri))
 
