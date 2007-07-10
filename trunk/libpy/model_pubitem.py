@@ -67,7 +67,7 @@ class PubItem(PubShelfModel):
     try:
       cursor = self.get_dbi().conn.cursor()
       sql = "DELETE FROM pubitems WHERE id=?"
-      cursor.execute(sql,[self.id])
+      cursor.execute(sql,(str(self.id),))
       
       l = Link()
       l.delete_with_cursor_and_pubitem(cursor, self)
@@ -92,7 +92,7 @@ class PubItem(PubShelfModel):
                       WHERE id=?", 
                       (self.pub_type, self.title, self.authors, self.journal, 
                        self. publisher, self.volume, self.page, self.pub_year,
-                       self.id))
+                       str(self.id)))
       
       l = Link()
       l.delete_with_cursor_and_pubitem(cursor, self)
@@ -168,7 +168,7 @@ class PubItem(PubShelfModel):
     sql = "SELECT id,nickname,pub_type,title,authors,journal,publisher,\
             volume,page,pub_year,created_at FROM pubitems WHERE id=?"
     cursor = self.get_dbi().conn.cursor()
-    for row in cur.execute(sql, self.id):
+    for row in cur.execute(sql, (str(self.id),)):
       self.id = row[0]
       self.nickname = row[1]
       self.pub_type = row[2]
@@ -195,9 +195,9 @@ class PubItem(PubShelfModel):
                   title=row[3], authors=row[4], journal=row[5], \
                   publisher=row[6], volume=row[7], page=row[8], \
                   pub_year=row[9], created_at=row[10])
-      pubitem.set_links()
+      #pubitem.set_links()
       pubitem.set_tags()
-      pubitem.set_comments()
+      #pubitem.set_comments()
       rv.append(pubitem)
     return rv
 
@@ -211,7 +211,7 @@ class PubItem(PubShelfModel):
               AND t.category=? AND t.name=? ORDER BY p.pub_year DESC" 
 
     cur = self.get_dbi().conn.cursor()
-    for row in cur.execute(sql, [tag_category, tag_name]):
+    for row in cur.execute(sql, (tag_category, tag_name)):
       pubitem = PubItem(id=row[0], nickname=row[1], pub_type=row[2], \
                   title=row[3], authors=row[4], journal=row[5], \
                   publisher=row[6], volume=row[7], page=row[8], \
