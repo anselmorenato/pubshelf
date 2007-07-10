@@ -66,10 +66,12 @@ class PubShelfItemContent(wx.html.HtmlWindow):
       dialogComment = PubShelfCommentDialog(self,-1)
       dialogComment.SetComment(comment)
       dialogComment.Show()
-    elif( uri.startswith('/') ):
-      if( uri.endswith('pdf') ):
-        os.system(self.conf['apps']['pdf']+' "'+uri+'"')
+    else:
+      file_uri = os.path.join(self.conf['dir_db'], uri)
+      if( os.path.isfile(file_uri) ):
+        if( uri.endswith('pdf') ):
+          os.system(self.conf['apps']['pdf']+' "'+file_uri+'"')
+        else:
+          os.system(self.conf['apps']['html']+' "'+file_uri+'"')
       else:
         os.system(self.conf['apps']['html']+' "'+uri+'"')
-    else:
-      os.system(self.conf['apps']['html']+' "'+uri+'"')
