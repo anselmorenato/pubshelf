@@ -13,6 +13,7 @@ ID_LINK_ADD_BUTTON = 2011
 ID_LINK_DELETE_BUTTON = 2012
 ID_LINK_TITLE_FORM = 2013
 ID_LINK_URI_FORM = 2014
+ID_LINK_LIST_CTRL = 2015
 ID_TAG_ADD_BUTTON  = 2020
 ID_TAG_DELETE_BUTTON  = 2021
 ID_TAG_FORM = 2022
@@ -130,10 +131,12 @@ class PubShelfPubItemDialog(wx.Frame):
                                 style=wx.TE_LEFT|wx.TE_PROCESS_ENTER)
     fileBrowseButton = wx.Button(panel, ID_FILE_SELECT_BUTTON, 'File')
     linkAddButton = wx.Button(panel, ID_LINK_ADD_BUTTON, 'Add')
-    self.forms['link_list'] = wx.ListCtrl(panel, -1, style=wx.LC_REPORT)
+    self.forms['link_list'] = wx.ListCtrl(panel, ID_LINK_LIST_CTRL, style=wx.LC_REPORT)
     self.forms['link_list'].InsertColumn(0,'Title', width=linkTitleWidth)
     self.forms['link_list'].InsertColumn(1,'URI', width=linkURIWidth)
     linkDeleteButton = wx.Button(panel, ID_LINK_DELETE_BUTTON, 'Delete')
+    
+    self.forms['link_list'].Bind(wx.EVT_LEFT_DCLICK, self.OnDoubleClick, id=ID_LINK_LIST_CTRL )
 
     self.Bind(wx.EVT_BUTTON, self.OpenFile, id=ID_FILE_SELECT_BUTTON)
     self.Bind(wx.EVT_BUTTON, self.AddLink, id=ID_LINK_ADD_BUTTON)
@@ -265,6 +268,13 @@ class PubShelfPubItemDialog(wx.Frame):
         self.forms['link_title'].SetValue('')
         self.forms['link_uri'].SetValue('')
         self.forms['link_list'].Append( [linkTitle, linkURI] )
+
+  def OnDoubleClick(self, event):
+    listctrl = self.forms['link_list']
+    selected_idx = listctrl.GetFocusedItem()
+
+    self.forms['link_title'].SetValue(listctrl.GetItem(selected_idx,0).GetText())
+    self.forms['link_uri'].SetValue(listctrl.GetItem(selected_idx,1).GetText())
 
   def DeleteLink(self, event):
     for selected_link in self.SelectedItemText(self.forms['link_list']):
