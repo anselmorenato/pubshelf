@@ -107,6 +107,7 @@ class PubItem(PubShelfModel):
       #  for comment in self.comments:
       #    comment.pubitem_id = self.id
       #    comment.insert_with_cursor(cursor)
+      self.set_comments()
       
       t = Tag()
       t.delete_with_cursor_and_pubitem(cursor, self)
