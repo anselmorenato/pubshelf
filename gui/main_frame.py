@@ -84,7 +84,6 @@ class PubShelfFrame(wx.Frame):
 
   def OnDoubleClick(self, event):
     pubitem = self.itemContent.pubitem
-    frame = self.GetParent()
-    dialog = PubShelfPubItemDialog(frame, -1)
+    dialog = PubShelfPubItemDialog(self, -1)
     dialog.SetPubItem(pubitem)
     dialog.Show()
