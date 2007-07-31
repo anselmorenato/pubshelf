@@ -41,11 +41,13 @@ class PubShelfItemContent(wx.html.HtmlWindow):
     url_add = "<A HREF='AddComment'><font color='white'>Add</font></A>"
     rv += "<TR><TD BGCOLOR='blue'><font color='white'>"
     rv += "<b>Comments</b> %s </font></TD></TR>" % url_add
+    p = re.compile( '[\n]' )
     for comment in pubitem.comments:
+      text = p.sub( '<br>', comment.textbody )
       url_edit = "<A HREF='EditComment/%d'>[Edit]</A>" % comment.id
       rv += "<TR><TD><b>%s</b> by <i>%s</i> (%s) %s</TD></TR>" \
               % (comment.title, comment.author, comment.created_at, url_edit)
-      rv += "<TR><TD><PRE>%s</PRE></TD></TR>" % comment.textbody
+      rv += "<TR><TD>%s</TD></TR>" % text
     rv += "</TABLE>"
     self.SetPage(rv)
   

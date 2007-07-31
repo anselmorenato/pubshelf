@@ -14,6 +14,8 @@ minTreePaneWidth = 100
 itemListHeight = 200
 minItemPaneHeight = 100
 
+ID_ITEM_CONTENT = 77
+
 class PubShelfFrame(wx.Frame):
   def __init__(self, parent, id, title):
     wx.Frame.__init__(self, parent, id, title, wx.DefaultPosition, windowSize)
@@ -54,7 +56,8 @@ class PubShelfFrame(wx.Frame):
     self.itemList = PubShelfItemList(self.itemSplitter, -1)
 
     ## ItemContent
-    self.itemContent = PubShelfItemContent(self.itemSplitter, -1)
+    self.itemContent = PubShelfItemContent(self.itemSplitter, id=ID_ITEM_CONTENT)
+    self.itemContent.Bind(wx.EVT_LEFT_DCLICK, self.OnDoubleClick, id=ID_ITEM_CONTENT)
     
     ## Wrap Up
     self.itemSplitter.SplitHorizontally(self.itemList, self.itemContent,
@@ -79,3 +82,9 @@ class PubShelfFrame(wx.Frame):
     self.itemList.OnResize()
     event.Skip()
 
+  def OnDoubleClick(self, event):
+    pubitem = self.itemContent.pubitem
+    frame = self.GetParent()
+    dialog = PubShelfPubItemDialog(frame, -1)
+    dialog.SetPubItem(pubitem)
+    dialog.Show()
