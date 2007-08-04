@@ -204,16 +204,19 @@ class PubShelfPubItemDialog(wx.Frame):
     self.Close()
 
   def OnDelete(self, event):
-    pubitem = PubItem()
-    pubitem.id = int(self.forms['id'].GetLabel())
-    if( pubitem.id ): 
-      pubitem.id = int(pubitem.id)
-      pubitem.delete()
-      self.GetParent().itemList.remove_by_pubitem_id(pubitem.id)
-      self.GetParent().itemList.Refresh()
-      self.GetParent().itemContent.SetBlank()
-      self.GetParent().tree.Refresh()
-      self.Close()
+    msg_box = wx.MessageDialog(self, "Do you really want to delete?", "Warning", wx.YES_NO | wx.NO_DEFAULT | wx.CENTRE | wx.ICON_EXCLAMATION )
+    result = msg_box.ShowModal()
+    if( result == wx.ID_YES ):
+      pubitem = PubItem()
+      pubitem.id = int(self.forms['id'].GetLabel())
+      if( pubitem.id ): 
+        pubitem.id = int(pubitem.id)
+        pubitem.delete()
+        self.GetParent().itemList.remove_by_pubitem_id(pubitem.id)
+        self.GetParent().itemList.Refresh()
+        self.GetParent().itemContent.SetBlank()
+        self.GetParent().tree.Refresh()
+        self.Close()
     
   def OnSubmit(self, event):
     pubitem = PubItem()
