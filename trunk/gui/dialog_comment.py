@@ -90,12 +90,15 @@ class PubShelfCommentDialog(wx.Frame):
       self.Close()
   
   def OnDelete(self, event):
-    c = Comment()
-    c.id = self.forms['id'].GetLabel()
-    if( c.id != '0' ): c.delete()
-    self.GetParent().pubitem.set_comments()
-    self.GetParent().SetPubItem( self.GetParent().pubitem )
-    self.Close()
+    msg_box = wx.MessageDialog(self, "Do you really want to delete?", "Warning", wx.YES_NO | wx.NO_DEFAULT | wx.CENTRE | wx.ICON_EXCLAMATION )
+    result = msg_box.ShowModal()
+    if( result == wx.ID_YES ):
+      c = Comment()
+      c.id = self.forms['id'].GetLabel()
+      if( c.id != '0' ): c.delete()
+      self.GetParent().pubitem.set_comments()
+      self.GetParent().SetPubItem( self.GetParent().pubitem )
+      self.Close()
 
   def SetComment(self, comment):
     self.forms['id'].SetLabel("%d" % comment.id )
