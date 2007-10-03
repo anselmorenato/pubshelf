@@ -31,7 +31,7 @@ class Tag(PubShelfModel):
 
   def find_all(self):
     rv = []
-    sql = "SELECT id, category, name FROM tags"
+    sql = "SELECT id, category, name FROM tags ORDER BY category, name"
     for row in self.get_dbi().conn.execute(sql):
       rv.append( Tag(id=row[0], category=row[1], name=row[2]) )
     return rv
