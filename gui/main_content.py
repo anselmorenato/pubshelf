@@ -72,12 +72,10 @@ class PubShelfItemContent(wx.html.HtmlWindow):
       dialogComment.Show()
     else:
       file_uri = os.path.join(self.conf['dir_db'], uri)
-      print file_uri
-      print uri
       if( os.path.isfile(file_uri) ):
         if( uri.endswith('pdf') ):
-          Popen([self.conf['apps']['pdf'], '"'+file_uri+'"'])
+          Popen([self.conf['apps']['pdf'], file_uri])
         else:
-          Popen([self.conf['apps']['html'], '"'+file_uri+'"'])
+          Popen([self.conf['apps']['html'], file_uri])
       else:
         Popen([self.conf['apps']['html'], uri])
