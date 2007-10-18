@@ -5,22 +5,10 @@ from string import atoi
 from conf import PubShelfConf
 from model_comment import Comment
 from dialog_comment import PubShelfCommentDialog
+from subprocess import Popen
+#use win32api.GetShortPathName to get that 'C:\AUTOMA~1\AOSWEB\ACTUAL~1.PY' thing, #Python/Windows aint like spaces ..
 
 LabelSize = (100,15)
-
-def run (program, *args):
-   "Run external program, wait til it quits, and return the exit code"
-   #Actually comment out line below on windows, I get attribute error here
-#     spawn = os.spawnvp #not available in windows
-   if os.name == "nt": spawn = os.spawnv
-   return spawn(os.P_WAIT, program, (program,) + args)
-
-def start (program, *args):
-   "Start an external program and return immediately, returning proc id"
-   #Actually comment out line below on windows, I get attribute error here
-#     spawn = os.spawnvp #not available in windows
-   if os.name == "nt": spawn = os.spawnv
-   return spawn(os.P_NOWAIT, program, (program,) + args)
 
 class PubShelfItemContent(wx.html.HtmlWindow):
   def __init__(self, parent, id):
@@ -84,10 +72,12 @@ class PubShelfItemContent(wx.html.HtmlWindow):
       dialogComment.Show()
     else:
       file_uri = os.path.join(self.conf['dir_db'], uri)
+      print file_uri
+      print uri
       if( os.path.isfile(file_uri) ):
         if( uri.endswith('pdf') ):
-          start(self.conf['apps']['pdf'], '"'+file_uri+'"')
+          Popen([self.conf['apps']['pdf'], '"'+file_uri+'"'])
         else:
-          start(self.conf['apps']['html'], file_uri)
+          Popen([self.conf['apps']['html'], '"'+file_uri+'"'])
       else:
-        start(self.conf['apps']['html'], '"'+uri+'"')
+        Popen([self.conf['apps']['html'], uri])
