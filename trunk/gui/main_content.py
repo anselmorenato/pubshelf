@@ -8,6 +8,20 @@ from dialog_comment import PubShelfCommentDialog
 
 LabelSize = (100,15)
 
+def run (program, *args):
+   "Run external program, wait til it quits, and return the exit code"
+   #Actually comment out line below on windows, I get attribute error here
+#     spawn = os.spawnvp #not available in windows
+   if os.name == "nt": spawn = os.spawnv
+   return spawn(os.P_WAIT, program, (program,) + args)
+
+def start (program, *args):
+   "Start an external program and return immediately, returning proc id"
+   #Actually comment out line below on windows, I get attribute error here
+#     spawn = os.spawnvp #not available in windows
+   if os.name == "nt": spawn = os.spawnv
+   return spawn(os.P_NOWAIT, program, (program,) + args)
+
 class PubShelfItemContent(wx.html.HtmlWindow):
   def __init__(self, parent, id):
     window_style = wx.html.HW_SCROLLBAR_AUTO
@@ -72,8 +86,8 @@ class PubShelfItemContent(wx.html.HtmlWindow):
       file_uri = os.path.join(self.conf['dir_db'], uri)
       if( os.path.isfile(file_uri) ):
         if( uri.endswith('pdf') ):
-          os.system(self.conf['apps']['pdf']+' "'+file_uri+'"')
+          start(self.conf['apps']['pdf'], '"'+file_uri+'"')
         else:
-          os.system(self.conf['apps']['html']+' "'+file_uri+'"')
+          start(self.conf['apps']['html'], file_uri)
       else:
-        os.system(self.conf['apps']['html']+' "'+uri+'"')
+        start(self.conf['apps']['html'], '"'+uri+'"')
