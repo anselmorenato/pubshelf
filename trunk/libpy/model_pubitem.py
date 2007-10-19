@@ -52,8 +52,9 @@ class PubItem(PubShelfModel):
 
   def get_nickname_base(self):
     first_author = self.authors.split(',')[0]
-    first_author_surname  = re.sub(r'[A-Z\-]+$','',first_author)
+    first_author_surname  = re.sub(r'[A-Z\-\']+$','',first_author)
     first_author_surname  = re.sub(r'\s+','',first_author_surname)
+    first_author_surname  = re.sub(r'\'','_',first_author_surname)
     return "%s%d" % (first_author_surname, self.pub_year)
 
   def set_nickname(self):
