@@ -6,6 +6,8 @@ from conf import PubShelfConf
 from model_comment import Comment
 from dialog_comment import PubShelfCommentDialog
 from subprocess import Popen
+from model_pubitem import PubItem
+
 #use win32api.GetShortPathName to get that 'C:\AUTOMA~1\AOSWEB\ACTUAL~1.PY' thing, #Python/Windows aint like spaces ..
 
 LabelSize = (100,15)
@@ -70,6 +72,12 @@ class PubShelfItemContent(wx.html.HtmlWindow):
       dialogComment = PubShelfCommentDialog(self,-1)
       dialogComment.SetComment(comment)
       dialogComment.Show()
+    elif( uri.startswith('db:') ):
+      # internal link to pubshelf
+      nickname = uri.replace('db:','')
+      pi = PubItem()
+      pubitem = pi.find_by_nickname( nickname )
+      self.SetPubItem( pubitem )
     else:
       file_uri = os.path.join(self.conf['dir_db'], uri)
       if( os.path.isfile(file_uri) ):
