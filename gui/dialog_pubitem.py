@@ -271,6 +271,13 @@ class PubShelfPubItemDialog(wx.Frame):
         self.forms['link_title'].SetValue('')
         self.forms['link_uri'].SetValue('')
         self.forms['link_list'].Append( [linkTitle, linkURI] )
+      else:
+      	self.link_list[linkTitle] = linkURI
+      	self.forms['link_title'].SetValue('')
+      	self.forms['link_uri'].SetValue('')
+      	listItemID = self.forms['link_list'].FindItem(0, linkTitle)
+      	self.forms['link_list'].DeleteItem( listItemID )
+      	self.forms['link_list'].Append( [linkTitle, linkURI] )
 
   def OnDoubleClick(self, event):
     listctrl = self.forms['link_list']
