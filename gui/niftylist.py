@@ -99,10 +99,22 @@ class NiftyVirtualList(wx.ListCtrl):
         self.Refresh()
     
     def SetSort(self, cmp):
+        selected = self.GetFirstSelected()
+        
+        if (selected > -1):
+          sel_item = self._items[selected]
+          
         self._rowDataCmpFunc = cmp
         self._items.sort()
         self._filteredView.sort()
         self.Refresh()
+        
+        if (selected > -1):
+          self.Select(selected, 0) # deselect
+          new_sel = self._items.index(sel_item)
+          self.Select(new_sel) # select again
+          self.Focus(new_sel) # focus again
+          
 
     def _RePositionItem(self, item):
         self._items.remove(item)
