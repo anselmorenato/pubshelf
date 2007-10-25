@@ -12,20 +12,41 @@ class PubShelfTagTree(wx.TreeCtrl):
     self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnTreeSelChanged)
     
   def Refresh(self):
+    if (self.GetSelection()):
+      selected = self.GetSelection()
+      sel_item = self.GetItemText(selected)
+      
+      if (not self.ItemHasChildren(selected)):
+        sel_parent = self.GetItemText(self.GetItemParent(selected))
+      else:
+        sel_parent = ''
+    else:
+      sel_item = 'All'
+      sel_parent = ''
+    
     self.DeleteAllItems()
     self.root = self.AddRoot('Local')
     self.categories = dict()
     self.categories['All'] = self.AppendItem(self.root, 'All')
     self.categories['No Category'] = self.AppendItem(self.root, 'No Category')
     
+    if (sel_item == 'All' and sel_parent == ''):
+      self.SelectItem(self.categories['All'])
+    elif (sel_item == 'No Category' and sel_parent == ''):
+      self.SelectItem(self.categories['No Category'])
+    
     t = Tag()
     for tag in t.find_all():
       if(tag.category == ''):
-        self.AppendItem(self.categories['No Category'], tag.name)
+        id = self.AppendItem(self.categories['No Category'], tag.name)
+        if (tag.name == sel_item and sel_parent == 'No Category'):
+          self.SelectItem(id)
       else:
         if(not self.categories.has_key(tag.category)):
           self.categories[tag.category]=self.AppendItem(self.root, tag.category)
-        self.AppendItem(self.categories[tag.category], tag.name)
+        id = self.AppendItem(self.categories[tag.category], tag.name)
+        if (tag.name == sel_item and tag.category == sel_parent):
+          self.SelectItem(id)
     
   def OnTreeSelChanged(self, event):
     selected_item = event.GetItem()
