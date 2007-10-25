@@ -33,6 +33,7 @@ class PubShelfPubItemDialog(wx.Frame):
     self.tag_list = []
     self.link_list = dict()
     self.forms = dict()
+    self.modified = False
 
     mainSizer = wx.BoxSizer(wx.VERTICAL)
 
@@ -201,8 +202,13 @@ class PubShelfPubItemDialog(wx.Frame):
     self.RefreshLinkList()
 
   def OnClose(self, event):
-    self.Close()
-
+    if (self.modified):
+      msg_box = wx.MessageDialog(self, "You may have modified something. Really close?", "Warning", wx.YES_NO | wx.NO_DEFAULT | wx.CENTRE | wx.ICON_EXCLAMATION )
+      result = msg_box.ShowModal()
+      if ( result == wx.ID_YES ): self.Close()
+    else: # Didn't modified anything
+      self.Close()
+      
   def OnDelete(self, event):
     msg_box = wx.MessageDialog(self, "Do you really want to delete?", "Warning", wx.YES_NO | wx.NO_DEFAULT | wx.CENTRE | wx.ICON_EXCLAMATION )
     result = msg_box.ShowModal()
@@ -256,11 +262,13 @@ class PubShelfPubItemDialog(wx.Frame):
       self.tag_list.append(tag_raw)
     self.forms['tag'].SetValue('')
     self.RefreshTagList()
+    self.modified = True
   
   def DeleteTag(self, event):
     for selected_tag in self.SelectedItemText(self.forms['tag_list']):
       self.tag_list.remove(selected_tag)
     self.RefreshTagList()
+    self.modified = True
 
   def AddLink(self, event):
     linkTitle = self.forms['link_title'].GetValue()
@@ -278,6 +286,7 @@ class PubShelfPubItemDialog(wx.Frame):
       	listItemID = self.forms['link_list'].FindItem(0, linkTitle)
       	self.forms['link_list'].DeleteItem( listItemID )
       	self.forms['link_list'].Append( [linkTitle, linkURI] )
+      self.modified = True
 
   def OnDoubleClick(self, event):
     listctrl = self.forms['link_list']
@@ -290,6 +299,7 @@ class PubShelfPubItemDialog(wx.Frame):
     for selected_link in self.SelectedItemText(self.forms['link_list']):
       del self.link_list[selected_link]
     self.RefreshLinkList()
+    self.modified = True
 
   def RefreshTagList(self):
     self.forms['tag_list'].DeleteAllItems()
