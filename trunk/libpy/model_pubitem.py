@@ -198,7 +198,7 @@ class PubItem(PubShelfModel):
                   publisher=row[6], volume=row[7], page=row[8], \
                   pub_year=row[9], created_at=row[10])
       #pubitem.set_links()
-      pubitem.set_tags()
+      #pubitem.set_tags()
       #pubitem.set_comments()
       rv.append(pubitem)
     return rv
@@ -218,9 +218,9 @@ class PubItem(PubShelfModel):
                   title=row[3], authors=row[4], journal=row[5], \
                   publisher=row[6], volume=row[7], page=row[8], \
                   pub_year=row[9], created_at=row[10])
-      pubitem.set_links()
-      pubitem.set_tags()
-      pubitem.set_comments()
+      #pubitem.set_links()
+      #pubitem.set_tags()
+      #pubitem.set_comments()
       rv.append(pubitem)
     return rv
 
@@ -254,9 +254,9 @@ class PubItem(PubShelfModel):
                   title=row[3], authors=row[4], journal=row[5],
                   publisher=row[6], volume=row[7], page=row[8],
                   pub_year=row[9], created_at=row[10])
-      pubitem.set_links()
-      pubitem.set_tags()
-      pubitem.set_comments()
+      #pubitem.set_links()
+      #pubitem.set_tags()
+      #pubitem.set_comments()
       rv.append(pubitem)
 
     return rv
