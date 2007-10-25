@@ -213,7 +213,7 @@ class PubShelfPubItemDialog(wx.Frame):
         pubitem.id = int(pubitem.id)
         pubitem.delete()
         self.GetParent().itemList.remove_by_pubitem_id(pubitem.id)
-        self.GetParent().itemList.Refresh()
+#        self.GetParent().itemList.Refresh()
         self.GetParent().itemContent.SetBlank()
         self.GetParent().tree.Refresh()
         self.Close()
