@@ -32,7 +32,8 @@ class PubShelfItemContent(wx.html.HtmlWindow):
     rv += "</TD></TR><TR><TD BGCOLOR=#ccccff>"
     tags = []
     for tag in pubitem.tags:
-      tags.append( tag.category+'/'+tag.name )
+      temp = tag.category+'/'+tag.name
+      tags.append( "<A HREF='tag:"+temp+"'>"+temp+"</A>" )
     rv += ', '.join(tags) 
     rv += "</TD></TR>"
 
@@ -72,6 +73,12 @@ class PubShelfItemContent(wx.html.HtmlWindow):
       dialogComment = PubShelfCommentDialog(self,-1)
       dialogComment.SetComment(comment)
       dialogComment.Show()
+    elif( uri.startswith('tag:') ):
+      # internal link to a tag
+      [category_name, tag_name] = uri.replace('tag:','').split('/')
+      tree = self.GetParent().GetParent().GetParent().tree
+      tree.ChangeToAnItem( category_name, tag_name )
+      
     elif( uri.startswith('db:') ):
       # internal link to pubshelf
       nickname = uri.replace('db:','')
