@@ -27,6 +27,7 @@ class PubShelfTagTree(wx.TreeCtrl):
     self.DeleteAllItems()
     self.root = self.AddRoot('Local')
     self.categories = dict()
+    self.tags = dict()
     self.categories['All'] = self.AppendItem(self.root, 'All')
     self.categories['No Category'] = self.AppendItem(self.root, 'No Category')
     
@@ -39,12 +40,14 @@ class PubShelfTagTree(wx.TreeCtrl):
     for tag in t.find_all():
       if(tag.category == ''):
         id = self.AppendItem(self.categories['No Category'], tag.name)
+        self.tags['No Category'+'/'+tag.name] = id
         if (tag.name == sel_item and sel_parent == 'No Category'):
           self.SelectItem(id)
       else:
         if(not self.categories.has_key(tag.category)):
           self.categories[tag.category]=self.AppendItem(self.root, tag.category)
         id = self.AppendItem(self.categories[tag.category], tag.name)
+        self.tags[tag.category+'/'+tag.name] = id
         if (tag.name == sel_item and tag.category == sel_parent):
           self.SelectItem(id)
     
@@ -69,3 +72,15 @@ class PubShelfTagTree(wx.TreeCtrl):
 	
     item_list = self.GetParent().GetParent().itemList
     item_list.SetItemList(pubitems)
+
+  def ChangeToAnItem(self, category_name, tag_name):
+    # TODO : this is deadly dirty way to coding for non-category tags and not doing user-generated event
+    pi = PubItem()
+    pubitems = pi.find_by_tag_category_and_name(category_name, tag_name)
+
+    if (category_name == ''): category_name = 'No Category'    
+    self.SelectItem( self.tags[category_name+'/'+tag_name] )
+  
+    item_list = self.GetParent().GetParent().itemList
+    item_list.SetItemList(pubitems)
+    
