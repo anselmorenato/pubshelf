@@ -41,6 +41,8 @@ class PubShelfItemList(NiftyVirtualList):
       item.SetText(pubitem.nickname, 0)
       item.SetText(str(pubitem.pub_year), 1)
       item.SetText(pubitem.title, 2)
+    
+    self.colsort = [0, 0, 0] # 0=ascending ready, 1=descending ready
   
   def remove_by_pubitem_id(self, id):
     self.SetFilter(lambda x: x.id == id)
