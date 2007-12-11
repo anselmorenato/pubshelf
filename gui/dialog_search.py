@@ -1,9 +1,9 @@
 import wx
 from string import atoi
 import sys
-sys.path.append('../libpy/')
-from pubmed import *
-from google import *
+#sys.path.append('../libpy/')
+from libpy.pubmed import *
+from libpy.google import *
 from dialog_pubitem import PubShelfPubItemDialog
 
 ID_SEARCH_BUTTON = 3000

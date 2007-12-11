@@ -1,7 +1,7 @@
 import wx
 import sys
-from model_tag import Tag
-from model_pubitem import PubItem
+from libpy.model_tag import Tag
+from libpy.model_pubitem import PubItem
 
 class PubShelfTagTree(wx.TreeCtrl):
   def __init__(self, parent, id):

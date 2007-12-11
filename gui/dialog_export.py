@@ -1,8 +1,8 @@
 import wx
 import sys, os
-from conf import PubShelfConf
-from model_tag import Tag
-from model_pubitem import PubItem
+from libpy.conf import PubShelfConf
+from libpy.model_tag import Tag
+from libpy.model_pubitem import PubItem
 
 ID_EXPORT_BUTTON = 5000
 ID_CLOSE_BUTTON = 5001
