@@ -1,7 +1,7 @@
 import os
 import sqlite3
 #from pysqlite2 import dbapi2 as sqlite
-from conf import PubShelfConf
+from libpy.conf import PubShelfConf
 
 class PubShelfDBI:
   def __init__(self):

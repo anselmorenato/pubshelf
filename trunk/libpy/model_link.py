@@ -1,6 +1,6 @@
 import re, os, shutil
-from model import PubShelfModel
-from conf import PubShelfConf
+from libpy.model import PubShelfModel
+from libpy.conf import PubShelfConf
 
 class Link(PubShelfModel):
   def __init__(self, id=0, pubitem_id=0, name='', uri='', created_at=''):

@@ -1,6 +1,6 @@
 import cookielib, urllib2, re
 from string import atoi
-from model_pubitem import PubItem
+from libpy.model_pubitem import PubItem
 
 def parse_bibtex(raw):
   p = PubItem()

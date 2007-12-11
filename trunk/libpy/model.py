@@ -1,5 +1,5 @@
-from conf import PubShelfConf
-from dbi import PubShelfDBI
+from libpy.conf import PubShelfConf
+from libpy.dbi import PubShelfDBI
 
 class PubShelfModel:
   def __init__(self):
