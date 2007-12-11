@@ -1,8 +1,8 @@
 #!/usr/bin/python 
 import urllib, re, xml.sax
 from string import atoi
-from model_pubitem import PubItem
-from model_link import Link
+from libpy.model_pubitem import PubItem
+from libpy.model_link import Link
 
 class PubmedSearchHandler(xml.sax.ContentHandler):
   element_array = []

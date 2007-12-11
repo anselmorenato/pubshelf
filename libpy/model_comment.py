@@ -1,4 +1,4 @@
-from model import PubShelfModel
+from libpy.model import PubShelfModel
 
 class Comment(PubShelfModel):
   def __init__(self, id=0, pubitem_id=0, title='', author='Anonymous', 

@@ -1,10 +1,10 @@
 #from data import Tag, Link, Comment
 import sys,re
-from dbi import PubShelfDBI
-from model import PubShelfModel
-from model_tag import Tag
-from model_comment import Comment
-from model_link import Link
+from libpy.dbi import PubShelfDBI
+from libpy.model import PubShelfModel
+from libpy.model_tag import Tag
+from libpy.model_comment import Comment
+from libpy.model_link import Link
 
 class PubItem(PubShelfModel):
   def __init__(self, id=0, nickname='', title='', authors='', journal=''\

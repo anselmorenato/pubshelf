@@ -1,4 +1,4 @@
-from model import PubShelfModel
+from libpy.model import PubShelfModel
 
 class Tag(PubShelfModel):
   def __init__(self, id=0, category='', name='', created_at=''):
