@@ -1,6 +1,6 @@
 import wx
 from dialog_pubitem import PubShelfPubItemDialog
-from model_pubitem import PubItem
+from libpy.model_pubitem import PubItem
 
 WIDTH_NICKNAME = 130
 WIDTH_YEAR = 70

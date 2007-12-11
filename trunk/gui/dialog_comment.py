@@ -1,6 +1,6 @@
 import wx
 import sys, os
-from model_comment import Comment
+from libpy.model_comment import Comment
 
 ID_SUBMIT_BUTTON = 4000
 ID_DELETE_BUTTON = 4001

@@ -2,11 +2,11 @@ import wx
 import wx.html
 import os, re
 from string import atoi
-from conf import PubShelfConf
-from model_comment import Comment
+from libpy.conf import PubShelfConf
+from libpy.model_comment import Comment
+from libpy.model_pubitem import PubItem
 from dialog_comment import PubShelfCommentDialog
 from subprocess import Popen
-from model_pubitem import PubItem
 
 #use win32api.GetShortPathName to get that 'C:\AUTOMA~1\AOSWEB\ACTUAL~1.PY' thing, #Python/Windows aint like spaces ..
 
