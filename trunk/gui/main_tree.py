@@ -10,19 +10,24 @@ class PubShelfTagTree(wx.TreeCtrl):
     super(PubShelfTagTree, self).__init__(parent, id, style=window_style) 
     self.Refresh()
     self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnTreeSelChanged)
-    
-  def Refresh(self):
+
+  def GetSelTag(self):
     if (self.GetSelection()):
       selected = self.GetSelection()
-      sel_item = self.GetItemText(selected)
+      sel_tag = self.GetItemText(selected)
       
       if (not self.ItemHasChildren(selected)):
-        sel_parent = self.GetItemText(self.GetItemParent(selected))
+        sel_category = self.GetItemText(self.GetItemParent(selected))
       else:
-        sel_parent = ''
+        sel_category = sel_tag
+        sel_tag = ''
     else:
-      sel_item = 'All'
-      sel_parent = ''
+      sel_tag = 'All'
+      sel_category = ''
+    
+    return (sel_category, sel_tag)
+  def Refresh(self):
+    (sel_category, sel_tag) = self.GetSelTag()
     
     self.DeleteAllItems()
     self.root = self.AddRoot('Local')
@@ -31,9 +36,9 @@ class PubShelfTagTree(wx.TreeCtrl):
     self.categories['All'] = self.AppendItem(self.root, 'All')
     self.categories['No Category'] = self.AppendItem(self.root, 'No Category')
     
-    if (sel_item == 'All' and sel_parent == ''):
+    if (sel_category == 'All' and sel_tag == ''):
       self.SelectItem(self.categories['All'])
-    elif (sel_item == 'No Category' and sel_parent == ''):
+    elif (sel_category == 'No Category' and sel_tag == ''):
       self.SelectItem(self.categories['No Category'])
     
     t = Tag()
@@ -41,14 +46,14 @@ class PubShelfTagTree(wx.TreeCtrl):
       if(tag.category == ''):
         id = self.AppendItem(self.categories['No Category'], tag.name)
         self.tags['No Category'+'/'+tag.name] = id
-        if (tag.name == sel_item and sel_parent == 'No Category'):
+        if (tag.name == sel_tag and sel_category == 'No Category'):
           self.SelectItem(id)
       else:
         if(not self.categories.has_key(tag.category)):
           self.categories[tag.category]=self.AppendItem(self.root, tag.category)
         id = self.AppendItem(self.categories[tag.category], tag.name)
         self.tags[tag.category+'/'+tag.name] = id
-        if (tag.name == sel_item and tag.category == sel_parent):
+        if (tag.name == sel_tag and tag.category == sel_category):
           self.SelectItem(id)
     
   def OnTreeSelChanged(self, event):
