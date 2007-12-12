@@ -36,6 +36,11 @@ class PubItem(PubShelfModel):
     rv += self.get_volume_page() + " (%d)" % self.pub_year
     return rv
 
+  def get_wiki_citation(self):
+    rv = "%s, '''%s''', ''%s''" % (self.authors,self.title,self.journal)
+    rv += self.get_volume_page() + " (%d)" % self.pub_year
+    return rv
+
   def get_export_citation(self):
     ## bibtex
     bibtex_authors = self.authors.replace('; ',' and ')
@@ -43,6 +48,36 @@ class PubItem(PubShelfModel):
     bibtex = "@article{%s,\n  title={{%s}},\n  author={%s},\n  journal={%s},\n  volume={%s},\n  pages={%s},\n  year={%d}\n}\n\n" 
     return bibtex % (self.nickname, self.title, bibtex_authors, self.journal, 
                     self.volume, bibtex_page, self.pub_year)
+  
+  def get_export_wiki(self):
+    self.set_links()
+    self.set_tags()
+    self.set_comments()  
+
+    ## wiki style
+    rv  = "== " + self.title + " ==\n"
+    rv += "* "+self.get_wiki_citation()+"\n"
+    rv += "* tags\n"
+
+    tags = []
+    for tag in self.tags:
+      temp = tag.category+'/'+tag.name
+      tags.append( temp )
+    rv += '** '
+    rv += ', '.join(tags) 
+    rv += '\n'
+
+    rv += '* links\n'
+    for link in self.links:
+      if (link.uri[0:5] == 'http:'):
+        rv += "** [%s %s]\n" % (link.uri, link.name)
+
+#    rv += '=== comments ===\n'
+#    
+#    for comment in self.comments:
+#      rv += "==== %s ====\n%s\n\n" % (comment.title, comment.textbody)
+
+    return rv
 
   def get_volume_page(self):
     rv = ''
@@ -210,8 +245,7 @@ class PubItem(PubShelfModel):
             p.journal, p.publisher, p.volume, p.page, p.pub_year, p.created_at\
             FROM pubitems AS p, tags_pubitems AS tp, tags AS t \
             WHERE p.id=tp.pubitem_id AND tp.tag_id=t.id \
-              AND t.category=? AND t.name=? ORDER BY p.pub_year DESC" 
-
+              AND t.category LIKE ? AND t.name LIKE ? ORDER BY p.pub_year DESC" 
     cur = self.get_dbi().conn.cursor()
     for row in cur.execute(sql, (tag_category, tag_name)):
       pubitem = PubItem(id=row[0], nickname=row[1], pub_type=row[2], \
