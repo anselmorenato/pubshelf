@@ -125,7 +125,8 @@ class PubShelfPubItemDialog(wx.Frame):
 
     ## Links
     linkLabel = wx.StaticText(panel, -1, 'Links', style=wx.ALIGN_CENTER)
-    self.forms['link_title'] = wx.TextCtrl(panel, ID_LINK_TITLE_FORM, '',
+    self.forms['link_title'] = wx.TextCtrl(panel, ID_LINK_TITLE_FORM, 
+                                'FullText', 
                                 size=(linkTitleWidth,-1),style=wx.TE_LEFT)
     self.forms['link_uri'] = wx.TextCtrl(panel, ID_LINK_URI_FORM, '', 
                                 size=(linkURIWidth,-1),

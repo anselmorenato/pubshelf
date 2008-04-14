@@ -2,7 +2,7 @@
 import wx
 import yaml
 import sys
-sys.path.append('gui')
+sys.path.append('libwx')
 sys.path.append('libpy')
 
 from dialog_pubitem import PubShelfPubItemDialog
