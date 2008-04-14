@@ -330,7 +330,7 @@ class PubShelfPubItemDialog(wx.Frame):
     return rv
 
   def OpenFile(self, event):
-    file_dialog = wx.FileDialog(self, "Shooze a file", self.conf['dir_file'],
+    file_dialog = wx.FileDialog(self, "Chooze a file", self.conf['dir_file'],
                         "", "*.*", wx.OPEN)
     if( file_dialog.ShowModal() == wx.ID_OK ):
       file_path = file_dialog.GetPath()
