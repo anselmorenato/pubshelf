@@ -89,8 +89,8 @@ class PubShelfItemContent(wx.html.HtmlWindow):
       file_uri = os.path.join(self.conf['dir_db'], uri)
       if( os.path.isfile(file_uri) ):
         if( uri.endswith('pdf') ):
-          Popen([self.conf['apps']['pdf'], file_uri])
+          Popen([self.conf['pdf_app'], file_uri])
         else:
-          Popen([self.conf['apps']['html'], file_uri])
+          Popen([self.conf['html_app'], file_uri])
       else:
-        Popen([self.conf['apps']['html'], uri])
+        Popen([self.conf['pdf_app'], uri])
