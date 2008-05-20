@@ -93,4 +93,4 @@ class PubShelfItemContent(wx.html.HtmlWindow):
         else:
           Popen([self.conf['html_app'], file_uri])
       else:
-        Popen([self.conf['pdf_app'], uri])
+        Popen([self.conf['html_app'], uri])
