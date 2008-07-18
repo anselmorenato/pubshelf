@@ -1,0 +1,23 @@
+1. Install PyInstaller with UPX(just copy 'upx.exe' to pyinstaller directory). 
+ - http://pyinstaller.python-hosting.com/
+ - http://upx.sourceforge.net/
+
+2. Set PATH with the directory of PyInstaller/UPX.
+
+3. Run Configure.py located in PyInstaller directory.
+
+4. Move to pubshelf directory.
+
+5. Run make-dist-win32.bat script
+    mkdir dist
+    move db* dist
+    move icon dist
+    move config dist
+    Makespec.py --onefile --windowed pubshelf.py
+    Build.py pubshelf.spec
+    move pubshelf.exe dist  
+    move dist\db* .
+    move dist\icon .
+    move dist\config .
+
+6. Copy the following directories to dist/.
