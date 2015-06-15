@@ -1,0 +1,1 @@
+standalone bibliography management tool, written in python (powered by wxpython and sqlite3)
